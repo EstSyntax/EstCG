@@ -306,16 +306,20 @@ REMOVE (S <ne>) OR (A <ne>) (NOT 0 NElopulised)(NOT 0 ("([a-z]++)aasta=ne(.*)"r)
 REMOVE (S) (0 NudTud)(1 (Oqu) OR (Quo))(3 (Cqu) OR (Quo)) ;
 REMOVE (S) (0 NudTud)(1 (Oqu) OR (Quo))(4 (Cqu) OR (Quo)) ;
 
-ADD ("$1"v partic) TARGET AS (0 ("(.*[^=])[ntd]ud"r)) ; 
-ADD ("$1"v partic) TARGET AS (0 ("(.*)[=]+[ntd]ud"r)) ;
+ADD ("$1"v partic1) TARGET (A "([^=]*)[ntd]ud"r) ^ (partic1) ;
+ADD ("$1"v partic1) TARGET (S "([^=]*)[ntd]u"r) ^ (partic1) ;
+ADD ("$1"v partic1) TARGET (A "(.*)[=]+[ntd]ud"r) ^ (partic1) ;
+ADD ("$1"v partic1) TARGET (S "(.*)[=]+[ntd]u"r) ^ (partic1) ;
 ADD ("$1"v) TARGET S (0 ("(.*[^=])mine"r)) ;
 ADD ("$1"v) TARGET S (0 ("(.*)[=]+mine"r)) ;
-ADD ("$1"v) TARGET AS (0 ("(.*[^=])mata"r)) ;
-ADD ("$1"v) TARGET AS (0 ("(.*)[=]+mata"r)) ;
+ADD ("$1"v) TARGET A (0 ("(.*[^=])mata"r)) ;
+ADD ("$1"v) TARGET A (0 ("(.*)[=]+mata"r)) ;
 
 ADD ("$1"v <tav> partic) TARGET AS (0 ("(.*[^=])tav"r))(NOT 0 ("tuttav")) ; 
 ADD ("$1"v <tav> partic) TARGET AS (0 ("(.*)[=]+tav"r))(NOT 0 ("tuttav")) ; 
 ADD ("$1"v <v> partic) TARGET AS (NOT 0 (<tav>) OR ("tänav") OR ("päev") OR ("tuttav"))(0 ("(.*)[=]+v"r)) ; 
+
+#SUBSTITUTE (partic1) (partic) AS;
 
 SUBSTITUTE (G cap) (S prop sg gen cap) TARGET (G cap) (NOT 0 (prop)); 
 
@@ -349,5 +353,7 @@ SUBSTITUTE ("aida") ("aita") AS (0 ("aidanud") OR ("aida=nud") OR ("aida=nu"));
 SUBSTITUTE ("kleebi") ("kleepi") AS (0 ("kleebitud") OR ("kleebi=tud") OR ("kleebi=tu"));
 SUBSTITUTE ("tuisa") ("tuiska") AS (0 ("tuisanud") OR ("tuisa=nud") OR ("tuisa=nu"));
 
+AFTER-SECTIONS
+SUBSTITUTE (partic1) (partic) AS;
 
 END

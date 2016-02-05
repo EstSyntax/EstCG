@@ -1035,9 +1035,9 @@ SELECT PropGen (NOT -1 FinV)(1 RiikVald OR Liityhing)(NOT 1 D OR A);
 SELECT Gen (0C S)(NOT 0 ("osa"))(1 RiikVald OR Liityhing)(NOT 1 D OR A)(NOT -1 OmadusAse)(*-1 S + Part BARRIER CLB);
 SELECT S OR G (0 Liityhing OR Riikjne)(NOT 0 D OR ("kiri") OR ("kanal") OR ("Maa") OR ("Linn") OR ("Saks")); 
 SELECT SgNom (0 Kuju OR ("Academia"))(1 Cap);
-SELECT Nom OR D OR I (NOT 0 V)(-1 Opr OR >>>)(1 Cpr OR <<<)
-SELECT Nom OR D OR I (NOT 0 V)(-1 Opr OR >>>)(1 Arv OR Et OR Kvm OR Cap)(2 Cpr OR <<<)
-SELECT Nom OR D OR I (-1 Opr OR >>>)(1 Kvm)(2 Arv OR Et OR Kvm OR Cap)(3 Cpr OR <<<)
+SELECT Nom OR D OR I (NOT 0 V)(-1 Opr OR >>>)(1 Cpr OR <<<) ;
+SELECT Nom OR D OR I (NOT 0 V)(-1 Opr OR >>>)(1 Arv OR Et OR Kvm OR Cap)(2 Cpr OR <<<) ;
+SELECT Nom OR D OR I (-1 Opr OR >>>)(1 Kvm)(2 Arv OR Et OR Kvm OR Cap)(3 Cpr OR <<<) ;
 SELECT SgGen (0C S)(NOT -1 A)(1 S + Cap OR A)(2 RiikVald OR Liityhing);
 SELECT SgGen + Cap (0C S)(1 S + Cap OR A)(-1 RiikVald OR Liityhing);
 SELECT SgGen + Cap (0C S)(1 S + Cap OR A)(-1 S + Cap)(-2 RiikVald OR Liityhing);
@@ -1842,11 +1842,11 @@ SELECT ("kuigi") + D (1 A)(NOT *1 FinV BARRIER CLB) ;
 
 SELECT ("nagu") + J  (-1 CLB)(NOT -1 LA) ;
 "<nagu>" SELECT J (-1 A) ;
-"<nagu>" SELECT J (-1 S + PlPart)(1 S + PlPart)
+"<nagu>" SELECT J (-1 S + PlPart)(1 S + PlPart) ;
 "<nagu>" SELECT D (-1 Cond) ;
-"<nagu>" SELECT D (-1 SPN + Nom)(1 Sg3Verb)
+"<nagu>" SELECT D (-1 SPN + Nom)(1 Sg3Verb) ;
 SELECT ("nagu") + J  (*1 SPNSgNom BARRIER nppiir)(NOT *-1 Ole BARRIER CLB) ;
-"<nagu>" SELECT J (1 SPNSgNom)(*-1 Ole BARRIER CLB)(*-1 Nom BARRIER CLB LINK *-1 Nom BARRIER CLB) 
+"<nagu>" SELECT J (1 SPNSgNom)(*-1 Ole BARRIER CLB)(*-1 Nom BARRIER CLB LINK *-1 Nom BARRIER CLB) ;
 "<nagu>" SELECT J (-1 SPNSgNom)(*1 S + Ad BARRIER nppiir) ;
 
 SELECT ("sest") + J  (-1 CLB)(NOT 1 V) ;
@@ -2200,8 +2200,8 @@ SELECT ("muu") + P  (1 Koma)(2 Kui) ;
 
 "<nimelt>" SELECT D (-1 KesMis OR ("kus")) ;
 
-"<osalt>" SELECT D (NOT *-1 PoleSide BARRIER CLBC)
-"<Osalt>" SELECT D (NOT *-1 PoleSide BARRIER CLBC)
+"<osalt>" SELECT D (NOT *-1 PoleSide BARRIER CLBC) ;
+"<Osalt>" SELECT D (NOT *-1 PoleSide BARRIER CLBC) ;
 
 "<otsas>" SELECT S + SgIn (-1 In) ;
 
@@ -2538,7 +2538,7 @@ SELECT A + SgPart (-1 ("<midagi>") OR ("<Midagi>"))(NOT *-1 VatVerb OR PrVerb - 
 SELECT Kes + PlNom OR Mis + PlNom (-1 CLB LINK *-1C Kes + Pl  OR Mis + Pl  BARRIER CLB) ; 
 
 
-REMOVE ("aeg") + Adit (-1 Part) 
+REMOVE ("aeg") + Adit (-1 Part)  ;
 
 "<kodu>" SELECT D (-1 Ole)(NOT 1 Postg)(NOT 1 In OR Ad)(NOT 1 KustKuhu);
 "<kodu>" SELECT D (-1 Minema)(NOT 1 Postg)(NOT 1 In OR Ad)(NOT 1 KustKuhu);
@@ -2550,7 +2550,7 @@ SELECT ("lõpuks") + D (*0 Jõudma BARRIER CLB);
 "<näol>" SELECT S + Ad (-1 Pärisnimi);
 
 SELECT ("päev") + El  (1 ("päev") + Part );
-"<päeva>" SELECT Adit (-1 ("päev") + El ) 
+"<päeva>" SELECT Adit (-1 ("päev") + El ) ; 
 
 REMOVE ("näide") + S + SgTr (NOT -1 Tr);
 "<näiteks>" SELECT S (-1C Tr);
@@ -2571,7 +2571,7 @@ REMOVE ("mina") + S  (1 J)(2 SP);
 "<mina>" REMOVE S (-1 J)(-2 SP);
 "<mina>" SELECT S (-1 Jutum1)(1 Jutum2);
 "<mina>" SELECT P (*-1 Jutum1)(*1 Jutum2);
-REMOVE ("sina") + S  (*0 VPs2 BARRIER CLB)
+REMOVE ("sina") + S  (*0 VPs2 BARRIER CLB) ;
 SELECT ("sina") + P  (NOT 0 ("tee"))(1 J)(2 SP);
 "<sina>" SELECT P (NOT 0 ("tee"))(-1 J)(-2 SP);
 "<sina>" SELECT P (NOT 0 ("tee"))(-1 Jutum1)(1 Jutum2);
@@ -2580,7 +2580,7 @@ REMOVE ("mina") + S  (1 J)(2 SP);
 "<ma>" REMOVE S (-1 J)(-2 SP);
 "<ma>" SELECT S (-1 Jutum1)(1 Jutum2);
 "<ma>" SELECT P (*-1 Jutum1)(*1 Jutum2);
-REMOVE ("sina") + S  (*0 VPs2 BARRIER CLB)
+REMOVE ("sina") + S  (*0 VPs2 BARRIER CLB) ;
 SELECT ("sina") + P  (1 J)(2 SP);
 "<sa>" SELECT P (-1 J)(-2 SP);
 "<sa>" SELECT P (-1 Jutum1)(1 Jutum2);
@@ -2619,7 +2619,7 @@ SELECT ("kõik") + P + PlNom (*1 V + Pl BARRIER CLBC) (NOT *-1 SPSgNom BARRIER C
 "<kõik>" SELECT P + PlNom (*-1C V + Pl BARRIER J OR CLBC);
 
 SELECT ("kõige") + D (1 Acomp);
-SELECT ("kõige") + D (1 Nord)  
+SELECT ("kõige") + D (1 Nord)  ;
 REMOVE ("kõik") + P + Adit (0 Part);
 SELECT ("kõik") + P  (1 ("muu"));
 
@@ -2959,7 +2959,7 @@ SELECT Ncard + Nom (1 SPSgPart)(NOT 0 SPNom);
 
 SELECT Part (0 Yks) (1C Part);
 
-SELECT Ncard + Nom (0C Ncard)(1 SPPart)  
+SELECT Ncard + Nom (0C Ncard)(1 SPPart) ; 
 SELECT Ncard + Part (0C Ncard) (1C SPPart) (NOT 0 Nom);   
 SELECT Gen (0C Ncard) (1C SPGen);
 
@@ -3033,7 +3033,7 @@ SELECT Nord (0 ("<(.*)\\.>"r) OR ("(.*)\\."r));
 SELECT Nord OR Y (1 Fst)(NOT 2 ("</s>")); 
 SELECT Nord + SgNom (NOT 0 P)(1 SPNSgNom);
 SELECT Nord + SgGen (NOT 0 P)(1C SPSgGen);
-REMOVE Nord + SgGen (NOT *1 SubstSgCo BARRIER CLB)
+REMOVE Nord + SgGen (NOT *1 SubstSgCo BARRIER CLB);
 REMOVE Nord + Adit (NOT *1 Ill BARRIER CLB);
 REMOVE Nord + All (NOT *1 All BARRIER CLB);
 REMOVE Nord (NOT 1 Nominal OR Konj OR J OR V);
@@ -3116,8 +3116,8 @@ SELECT SGen OR P + Gen (1 Jutum2)(2C Postg);
 SELECT Postg (-1C SPGen) (1 Part)(*-1C Neg BARRIER CLB);
 
 SELECT Postn (-1 NimiAse + Nom)(-1 Ajamäärus);
-SELECT Postn (-1 NimiAse + Part)(-2 Ncard + Nom) 
-IFF Postn (-1 NimiAse + Part)(-2 Ncard + Digit) 
+SELECT Postn (-1 NimiAse + Part)(-2 Ncard + Nom) ;
+IFF Postn (-1 NimiAse + Part)(-2 Ncard + Digit) ;
 SELECT Postp (-1 NimiAse + Part)(-1 Ajamäärus) (NOT 0 FinV);
 SELECT Postp (-1 NimiAse + Part)(NOT 0 ("tagasi") OR ("edasi") OR ("läbi")) (NOT 0 FinV)(NOT 1 FinV);
 SELECT Postk (-1 NimiAse + Kom);
@@ -3264,11 +3264,11 @@ REMOVE Ole + Aux (*1 particV  BARRIER CLBC LINK 1C SPSgNom LINK NOT 1 Pärisnimi
 
 SELECT Ole + Aux (*1C particV BARRIER CLBC LINK NOT 1 Nom)(NOT 1 Nom)(NOT 2 Nom) ; 
 SELECT Ole + Aux (0 FinV)(*-1C particV BARRIER CLBC LINK NOT 1C S) ;
-SELECT Ole + Aux (NOT 0 Ger)(*1C particV BARRIER CLB LINK NOT 1 J LINK NOT *-1 Sid|Kvm)
+SELECT Ole + Aux (NOT 0 Ger)(*1C particV BARRIER CLB LINK NOT 1 J LINK NOT *-1 Sid|Kvm) ;
 
 
-SELECT Ole + Indic - Aux (-1 SNom OR P + Nom)(1C SNom OR P + Nom)(NOT *1 partic BARRIER CLBC)(NOT *-1 partic BARRIER CLBC) 
-SELECT Ole + Indic - Aux (-1 SNom OR P + Nom)(1 Nom)(2 SNom OR P + Nom)(NOT *1 partic BARRIER CLBC)(NOT *-1 partic BARRIER CLBC) 
+SELECT Ole + Indic - Aux (-1 SNom OR P + Nom)(1C SNom OR P + Nom)(NOT *1 partic BARRIER CLBC)(NOT *-1 partic BARRIER CLBC) ;
+SELECT Ole + Indic - Aux (-1 SNom OR P + Nom)(1 Nom)(2 SNom OR P + Nom)(NOT *1 partic BARRIER CLBC)(NOT *-1 partic BARRIER CLBC) ;
 
 SELECT OnPl (-1C SPSgNom)(-2 Konj ^ CLBC ^ ("ehk") ^ Aga)(-3 SPAN + Nom);
 SELECT OnPl (-1C SPSgNom)(-2 Ka OR SP + Gen OR ANom)(-3 Konj ^ CLBC ^ ("ehk") ^ Aga)(-4 SPAN + Nom); 
@@ -3676,7 +3676,7 @@ SELECT IndicImpfImps - Mod - Aux - Neg (-1 SPAND)(-2 IndicImpfImps - Mod - Aux -
 SELECT IndicImpfImps - Mod - Aux - Neg (-1 SPAND)(-2 Konj)(-3 IndicImpfImps - Mod - Aux - Neg); 
 
 SELECT Ger (-1 Koma)(NOT 1 Koma)(*1 Koma BARRIER FinV OR CLB);
-SELECT Ger (-1 CLB)(NOT 1 Koma)(*1 Koma BARRIER FinV OR CLB)
+SELECT Ger (-1 CLB)(NOT 1 Koma)(*1 Koma BARRIER FinV OR CLB) ;
 SELECT Ger (-1 Koma)(1 DaInf);
 SELECT Ger (-1C SPN + Sg + In);
 
@@ -4097,7 +4097,7 @@ REMOVE SPart (-1C A ^ NudTud ^ MataA)(NOT -1 Part OR PlGen OR Hulk)(NOT -2 Ole +
 REMOVE S + SgAdit (-1C A ^ NudTud ^ MataA)(NOT -1 SgAdit);
 REMOVE SNom (-1C A ^ NudTud ^ MataA)(NOT -1 Nom);
 REMOVE SPart (-1C A ^ NudTud ^ MataA)(NOT -1 Part OR Hulk);
-REMOVE SAdit (-1C A ^ NudTud ^ MataA)(NOT -1 Adit)
+REMOVE SAdit (-1C A ^ NudTud ^ MataA)(NOT -1 Adit) ;
 REMOVE S + In (-1C A ^ NudTud ^ MataA)(NOT -1 In);
 REMOVE SEl (-1C A ^ NudTud ^ MataA)(NOT -1 El);
 REMOVE S + All (-1C A ^ NudTud ^ MataA)(NOT -1 All);
@@ -5097,7 +5097,7 @@ SELECT ("kord") + D (1 Yks) (*2 Koma BARRIER CLB LINK 1 ("kord")) ;
 "<kord>" REMOVE D (-1 Nominal) ; 
 
 
-REMOVE S + SgNom (-1 Kes + Nom )(NOT *1 Ole)(NOT 1 Postn)
+REMOVE S + SgNom (-1 Kes + Nom )(NOT *1 Ole)(NOT 1 Postn) ;
 
 SELECT SNom (-1C Nom) (NOT -1 S OR PersPron)(NOT -1 InterPron OR DemPron)(NOT 0 Gen OR A OR FinV);
 SELECT SNom (NOT 0 J OR P OR A OR FinV)(-1C Nom) (NOT -1 S) (NOT 1 Nominal);

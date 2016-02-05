@@ -1159,7 +1159,7 @@ REMOVE (@OBJ)(0 (sg nom))(*1C Intr&YV + main BARRIER Verb ^ Intr&YV ^ EiAra OR C
 # see oli olnud ...
 REMOVE (@OBJ) (NOT *-1 Verb BARRIER CLB)
               (*1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra 
-                   LINK *1C Intr&YV BARRIER CLB LINK NOT *1 Verb BARRIER CLB)
+                   LINK *1C Intr&YV BARRIER CLB LINK NOT *1 Verb BARRIER CLB) ;
 # Viga: Sammu sõitma hakkasime alles siis, ...
 
 #oli see olnud ...
@@ -1178,7 +1178,7 @@ REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB
                     LINK *-1C Intr&YV BARRIER CLB
                     LINK -1 Ei 
                     LINK NOT *-1 Verb BARRIER CLB)
-              (NOT *1 Verb BARRIER CLB)
+              (NOT *1 Verb BARRIER CLB) ;
 REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra
                     LINK *-1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra
                     LINK NOT *-1 Verb BARRIER CLB)
@@ -1952,7 +1952,7 @@ REMOVE (pl gen @<NN) (-1 Koma)(-2 Pl + Gen)(NOT -2 (@<NN))(1 JaVoi ^ CLB);
 LIST Kom = kom;
 
 # Sidesonadega eraldatud
-REMOVE (sg nom @<NN) (*-1 JaVoi BARRIER Sid|Kvm OR CLB LINK -1 SbPr + Sg + Nom LINK NOT 0 (@<NN))
+REMOVE (sg nom @<NN) (*-1 JaVoi BARRIER Sid|Kvm OR CLB LINK -1 SbPr + Sg + Nom LINK NOT 0 (@<NN));
 REMOVE (pl nom @<NN) (*-1 JaVoi BARRIER CLB LINK -1 SbPr + Pl + Nom LINK NOT 0 (@<NN));
 REMOVE (sg gen @<NN) (*-1 JaVoi BARRIER CLB LINK -1 SbPr + Sg + Gen LINK NOT 0 (@<NN));
 REMOVE (pl gen @<NN) (*-1 JaVoi BARRIER CLB LINK -1 SbPr + Pl + Gen LINK NOT 0 (@<NN));
