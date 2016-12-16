@@ -227,6 +227,7 @@ LIST ABC = "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "
 	  "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z" ;
 LIST Case = nom gen part adit (sg ill) (pl ill) in el ad all abl tr es term abes kom ;
 LIST Case10 = nom gen part adit (sg ill) (pl ill) in el ad all abl tr ;
+LIST Case8 = part adit (sg ill) (pl ill) in el ad all abl tr ;
 LIST KohaK = adit (sg ill) (pl ill) in el ad all abl ; 
 LIST InIllAditEl = in (sg ill) (pl ill) adit el ;
 LIST KustKuhu = (sg ill) (pl ill) adit el abl all ;
@@ -1024,6 +1025,11 @@ SET PoleSide = POS - J ;
 
 SET IndicNeg = Indic + Neg ;
 
+#Kaili
+REMOVE ("saa" mod) (*0 ("tead" inf) BARRIER CLB);
+REMOVE ("saa" mod) (*0 ("mahti") BARRIER CLB);
+
+
 
 SUBSTITUTE Neg (*) IndicPresPsNeg (0 Imper)(*-1 ("eks") BARRIER CLBC OR V);
 SELECT IndicPresPs - Neg (0 Imper)(*-1 ("eks") BARRIER CLBC OR V);
@@ -1663,7 +1669,8 @@ SELECT DaInf (1 DaVerb OR (<InfP>) OR Võima)(NOT 0 Neg);
 SELECT DaInf (-1 DaVerb OR (<InfP>) OR Võima)(NOT 0 Neg); 
 SELECT DaInf (1 Konj OR LLZ)(*-1 DaVerb OR (<InfP>) BARRIER CLB); 
 SELECT particV (-1 Jcrd)(*-2 Ole BARRIER CLB)(*-2 particV BARRIER CLB); 
-REMOVE Aux (NOT 0 EiAra)(NOT *-1 particV BARRIER CLB)(NOT *1 particV BARRIER CLB); 
+#REMOVE Aux (NOT 0 EiAra)(NOT *-1 particV BARRIER CLB)(NOT *1 particV BARRIER CLB);
+REMOVE Aux (NOT 0 EiAra)(NEGATE *0 particV BARRIER CLB); 
 REMOVE ("käia") OR ("käiama") (0 Käima OR ("käima")); 
 REMOVE ("peeta") OR ("peetama") (0 Pidama OR ("pidama")); 
 REMOVE ("süst") + V OR ("süstma") (0 ("süstima") OR ("süsti") + V); 
@@ -3063,19 +3070,19 @@ SELECT Prep (1 Arv)(-1 V)(*3 NGP BARRIER CLB);
 
 SELECT ("üle") + Preg (NOT 0 Pren)(NOT -1 V)(1C Nom)(2C Nom); 
 
-REMOVE Preg (NOT *1 SPGen OR Digit BARRIER CLB);
+REMOVE Preg (NEGATE *1 SPGen OR Digit BARRIER CLB);
 REMOVE Preg (*1C nppiir BARRIER Gen OR Digit OR CLB); 
-REMOVE Prep (NOT *1 SPAN + Part OR Digit BARRIER CLB);
+REMOVE Prep (NEGATE *1 SPAN + Part OR Digit BARRIER CLB);
 REMOVE Prep (*1C nppiir BARRIER Part OR CLB);
-REMOVE Pret (NOT *1 Term OR ("(.*)ne"r) BARRIER CLB); 
+REMOVE Pret (NEGATE *1 Term OR ("(.*)ne"r) BARRIER CLB); 
 REMOVE Pret (*1C nppiir BARRIER Term OR CLB OR ("(.*)ne"r));
-REMOVE Prek (NOT *1 Kom BARRIER CLB);
+REMOVE Prek (NEGATE *1 Kom BARRIER CLB);
 REMOVE Prek (*1C nppiir BARRIER Kom OR CLB);
-REMOVE Preab (NOT *1 Abes OR Kom BARRIER CLB);
+REMOVE Preab (NEGATE *1 Abes OR Kom BARRIER CLB);
 REMOVE Preab (*1C nppiir BARRIER Abes OR Kom OR CLB);
-REMOVE Prea (NOT *1 All BARRIER CLB);
+REMOVE Prea (NEGATE *1 All BARRIER CLB);
 REMOVE Prea (*1C nppiir BARRIER All OR CLB);
-REMOVE Pree (NOT *1 El BARRIER CLB);
+REMOVE Pree (NEGATE *1 El BARRIER CLB);
 REMOVE Pree (*1C nppiir BARRIER El OR CLB);
 
 SELECT Preg (1 Gen) (2 Nominal + Gen)(NOT 2 Postg);      
@@ -3255,7 +3262,7 @@ SELECT particV - Aux (0 OlemSaa + partic + Ps)(NOT -1 A)(*-1 Ole + FinV BARRIER 
 
 REMOVE Ole + Aux (*1 Tegu BARRIER CLB) ;
 REMOVE Ole + Aux (*-1 Tegu BARRIER CLB) ;
-REMOVE Ole + Aux (NOT *1 particV BARRIER CLB) (NOT -1 particV)(NOT -2 particV) (NOT -1 Ei) ;
+REMOVE Ole + Aux (NEGATE *1 particV BARRIER CLB) (NOT -1 particV)(NOT -2 particV) (NOT -1 Ei) ; #KM
 
 
 SELECT Ole + Aux (-2 particV) (-1 Ei) ;
@@ -5695,8 +5702,8 @@ SUBSTITUTE $$Ncard $$Ncard + Sg + Nom TARGET $$Ncard (NOT 0 sgpl)(1 Kvm)(NOT 2 N
 SUBSTITUTE $$Ncard $$Ncard + Sg + Nom TARGET $$Ncard (NOT 0 sgpl)(1C Jutum1>>> OR V); 
 SUBSTITUTE $$Ncard $$Ncard + Sg + Nom TARGET $$Ncard (0 ("<([0-9\-,%\/]++)>"r))
 	(NOT 0 sgpl) (*1C ASP + Nom OR ASP + Part CBARRIER piir); 
-SUBSTITUTE Ncard Ncard + Sg + $$Case10 TARGET Ncard (0 ("<([0-9\-,%\/]++)>"r))
-	(NOT 0 sgpl)(*1C ASP + $$Case10 CBARRIER piir);
+SUBSTITUTE Ncard Ncard + Sg + $$Case8 TARGET Ncard (0 ("<([0-9\-,%\/]++)>"r))
+	(NOT 0 sgpl)(*1C ASP + $$Case8 CBARRIER piir);
 SUBSTITUTE $$Ncard $$Ncard + SgGen TARGET $$Ncard (0 ("<([0-9\-,%\/]++)>"r))
 	(NOT 0 sgpl)(*1C ASP + NiNaTaGa CBARRIER piir);
 

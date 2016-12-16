@@ -248,7 +248,7 @@ LIST ümberverb = "aja" "arva" "arvuta" "asu" "asusta" "ehita" "eksi" "haara"
 	"kukku" "kvalifitseeru" "kõndi" "käi" "kääna" "künd" "lask" "lõika" "löö" 
 	"lükka" "lüka" "lülita" "lülitu" "mat" "mine" "muut" "mõtesta" "mõtle" "nimeta" 
 	"orienteeru" "otsusta" "paiguta" "paiska" "pane" "piira" "pööra" "pöördu" 
-	"rahvusta" "rahvustu" "reastu" "riieta" "riietu" "riputa" "risti" "rõivasta" 
+	"rahvusta" "rahvustu" "reasta" "reastu" "riieta" "riietu" "riputa" "risti" "rõivasta" 
 	"rõivastu" ("saa" main) "sead" "sidu" "sulata" "sõnasta" "sätti" "sündi" "tege" 
 	"trükki" "tõmba" "tõst" "tõuka" "tähti" "tööta" "vaata" "vaheta" "vahti" 
 	"vala" "vali" "varise" "veen" "viska" "vormi" "võt" "võe" "õmble" "õppi" "ütle";
@@ -499,10 +499,10 @@ SUBSTITUTE (K post <gen>) (D) (K post <gen>) (0 postYV1) (-1 SP + (gen))
 
 SUBSTITUTE (K post <gen>) (D) (K post <gen>) (0 postYV1) (-1 SP + (gen))
 	(*0 (V ps) OR (V particN) BARRIER CLBC LINK NOT 0 Intr OR (inf) OR (imper) OR (mod) LINK NOT -1 (crd CLB))
-	(NOT *-2 SP + GenPart OR (inf) OR Hulk OR (Y) BARRIER CLBC)(NOT *1 SP + GenPart OR (inf) BARRIER CLBC);
+	(NEGATE *-2 SP + GenPart OR (inf) OR Hulk OR (Y) BARRIER CLBC)(NEGATE *1 SP + GenPart OR (inf) BARRIER CLBC);
 SUBSTITUTE (K post <gen>) (D) (K post <gen>) (0 postYV1) (-1 SP + (gen))
 	(*0 (V inf) OR (imper) BARRIER CLBC LINK NOT 0 Intr OR (mod))
-	(NOT *-2 SP + NGP OR (inf) OR Hulk BARRIER CLBC)(NOT *1 SP + NGP OR (inf) BARRIER CLBC); 
+	(NEGATE *-2 SP + NGP OR (inf) OR Hulk BARRIER CLBC)(NEGATE *1 SP + NGP OR (inf) BARRIER CLBC); 
 
 SUBSTITUTE (K post <part>) (D) (K post <part>) (0 postYV) (NOT -1 (part));
 SUBSTITUTE (K post <part>) (D) (K post <part>) (0 postYV) (-1 SP + (part))(1 (V) OR (partic))(NOT 1 Intr)

@@ -156,7 +156,7 @@ SUBSTITUTE (J) (J crd) ("ja") OR ("või") OR ("ning") OR ("aga") OR ("ega") OR (
 
 SUBSTITUTE (J) (J sub) ("et") OR ("kuna") OR ("nagu") OR ("sest") OR ("olgugi") OR ("ehkki") OR ("kuigi") OR ("otsekui") OR ("otse_kui") OR ("justkui") OR ("just_kui") OR ("selmet") (NOT 0 (J sub)); 
 
-ADD (<nud>) (A) OR (S) (NOT 0 (<nud>))(0 ("(.*)nud"r)); 
+ADD (<nud>) (A) OR (S) (NOT 0 (<nud>) OR (prop))(0 ("(.*)nud"r)); 
 ADD (<tud>) (A) OR (S) (NOT 0 (<tud>))(0 ("(.*)tud"r)); 
 ADD (<dud>) (A) OR (S) (NOT 0 (<dud>) OR ("ladu"))(0 ("(.*)dud"r)); 
 
@@ -167,7 +167,7 @@ ADD (<mata>) (A) (NOT 0 (<mata>))(0 ("(.*)mata"r));
 ADD (<mine>) (A) OR (S) (NOT 0 (<mine>))(0 ("(.+)mine"r)) (NOT 0 ("peamine") OR ("keskmine") OR ("ülemine") OR ("alumine") OR ("järgmine") OR ("eelmine") OR ("üle_järgmine") OR ("üle_eelmine")); 
 SUBSTITUTE (A pos) (S com) TARGET (<mine>) (NOT 0 S)(NOT 1 S)
 	(NOT 0 ("peamine") OR ("keskmine") OR ("järgmine") OR ("eelmine") OR ("üle_järgmine") OR ("üle_eelmine")); 
-ADD (<v>) (A) OR (S) (NOT 0 (<v>) OR (<tav>)  OR ("tänav") OR ("päev"))(0 ("<(.+)v>"r)); 
+ADD (<v>) (A) OR (S) (NOT 0 (<v>) OR (<tav>)  OR ("tänav") OR ("päev") OR (prop))(0 ("<(.+)v>"r)); 
 
 ADD (<->) (*) (NOT 0 (<->))(0 ("<(.+)->"r)); 
 SUBSTITUTE (A pos sg nom <->) (S com sg gen <->) TARGET ("<->");
@@ -306,10 +306,10 @@ REMOVE (S <ne>) OR (A <ne>) (NOT 0 NElopulised)(NOT 0 ("([a-z]++)aasta=ne(.*)"r)
 REMOVE (S) (0 NudTud)(1 (Oqu) OR (Quo))(3 (Cqu) OR (Quo)) ;
 REMOVE (S) (0 NudTud)(1 (Oqu) OR (Quo))(4 (Cqu) OR (Quo)) ;
 
-ADD ("$1"v partic1) TARGET (A "([^=]*)[ntd]ud"r) ^ (partic1) ;
-ADD ("$1"v partic1) TARGET (S "([^=]*)[ntd]u"r) ^ (partic1) ;
-ADD ("$1"v partic1) TARGET (A "(.*)[=]+[ntd]ud"r) ^ (partic1) ;
-ADD ("$1"v partic1) TARGET (S "(.*)[=]+[ntd]u"r) ^ (partic1) ;
+ADD ("$1"v partic1) TARGET (A "([^=]*)[ntd]ud"r) ^ (partic1) (NOT 0 (prop)) ;
+ADD ("$1"v partic1) TARGET (S "([^=]*)[ntd]u"r) ^ (partic1) (NOT 0 (prop));
+ADD ("$1"v partic1) TARGET (A "(.*)[=]+[ntd]ud"r) ^ (partic1)  (NOT 0 (prop));
+ADD ("$1"v partic1) TARGET (S "(.*)[=]+[ntd]u"r) ^ (partic1)  (NOT 0 (prop));
 ADD ("$1"v) TARGET S (0 ("(.*[^=])mine"r)) ;
 ADD ("$1"v) TARGET S (0 ("(.*)[=]+mine"r)) ;
 ADD ("$1"v) TARGET A (0 ("(.*[^=])mata"r)) ;
@@ -317,7 +317,7 @@ ADD ("$1"v) TARGET A (0 ("(.*)[=]+mata"r)) ;
 
 ADD ("$1"v <tav> partic) TARGET AS (0 ("(.*[^=])tav"r))(NOT 0 ("tuttav")) ; 
 ADD ("$1"v <tav> partic) TARGET AS (0 ("(.*)[=]+tav"r))(NOT 0 ("tuttav")) ; 
-ADD ("$1"v <v> partic) TARGET AS (NOT 0 (<tav>) OR ("tänav") OR ("päev") OR ("tuttav"))(0 ("(.*)[=]+v"r)) ; 
+ADD ("$1"v <v> partic) TARGET AS (NOT 0 (<tav>) OR ("tänav") OR ("päev") OR ("tuttav"))(0 ("(.*)[=]+v"r)) (NOT 0 (prop)); 
 
 #SUBSTITUTE (partic1) (partic) AS;
 

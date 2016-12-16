@@ -1,6 +1,6 @@
 DELIMITERS = "<s>" "</s>" "</p>" "<p>";
 
-PARENTHESES = ("<(>" "<)>") ("<[>" "<]>") ("<{>" "<}>") (CLO CLC) ; # ("<“>" "<”>"); 
+#PARENTHESES = ("<(>" "<)>") ("<[>" "<]>") ("<{>" "<}>") (CLO CLC) ; # ("<“>" "<”>"); 
 
 BEFORE-SECTIONS
 
@@ -42,14 +42,14 @@ LIST SPAN = S P A N;
 LIST NGP = nom gen part;
 
 LIST Tr2Intr = "aitama" "andma" "haarama" "hakkama" "hammustama" "hauduma" "heitma" "hoidma" "jooma" "jõllitama" "kiiluma" "kiitma" "kirjutama" "laskma" "litsuma" "lööma" "maksma" "murdma" "mõtlema" "mängima" "nägema" "pakkuma" "paluma" "panema" "passima" "pidama" "pingutama" "pistma" "pressima" "raiuma" "rebima" "rõõmustama" "rääkima" "saama" "tundma" "ulatama" "vaatama" "vahtima" "vedama" "viskama" "ütlema" ;
-LIST Intr = <Intr>;
+LIST Intr = <Intr> "mine";
 SET IYV = Tr2Intr + (<PhVerb>);
 SET Intr&YV = Intr OR IYV;
 
 LIST KompKvAdv = "enam" "enim" "rohkem" "vähem";
 LIST KvPron ="terve" ("kogu" P) "paljud" "mõlemad" "muist" "mitu" "mi=tu";
 LIST NimKv = "liiter" "meeter" "kilo_meeter" "tonn" ("tund" S) "aasta" "tükk" "natuke" "ivake" "veidike" "korv" "viil" "kott" "ämber" "pudel" "klaas" "pott" "poti_täis" "pann" "panni_täis" "kilo" "kübe" "komplekt" "killu~ke" "m2" "m3" "km2" "km3" 
-	"hulk" "rühm" "paar" "kimp" "kari" "virn" "polk" "trobi_kond" "osa" "enamik" "enamus" "raasuke" "kamp" "punt" "kamakas" "rida" "kuhi" "pakk" "kuu" "nädal" "ohtralt" ("jagu" S) "oma_jagu" "kiht" "osa";
+	"hulk" "rühm" "paar" "kimp" "kari" "virn" "polk" "trobi_kond" "osa" "enamik" "enamus" "raasuke" "kamp" "punt" "kamakas" "rida" "kuhi" "pakk" "kuu" "nädal" "ohtralt" ("jagu" S) "oma_jagu" "kiht" "osa" "arv";
 LIST Täis = "täis" "tulvil";
 LIST KvAdv = ("palju" D) "vähe" "pisut" "veidi" "küllalt" "rohkesti" "täis" "tulvil" "peo_täis" "rohkem" "vähem" "enamik" "enamus" "ohtralt" "arvukalt" ("jagu" S) "oma_jagu" "kiht" "patakas";
 LIST ArvKv = (N card) "mitu" "mi=tu" "mitu_setu" "paar" "tosin" "mitu_kümmend" "mitu_sada" "kümmekond" "sadakond" "pool_teist" "tuh" "milj";
@@ -148,11 +148,12 @@ LIST Prverb = ("näi" V) ("paist" V) ("tundu" V) ("hakka" V) ("püsi" V) ("juhtu
 #MAP (@NONE) TARGET (*) (*-1 (Opr) BARRIER (Cpr))(*1 (Cpr) BARRIER (Opr));
 
 MAP (@NEG) TARGET ("ei" V) ;
-ADD (@FMV) TARGET (V main neg) ; # TP, muidu jäi üldse ilma @!
+#ADD (@FMV) TARGET (V main neg) ; # TP, muidu jäi üldse ilma @!
 MAP (@ICV) TARGET (V aux partic) ;
 MAP (@ICV) TARGET (V aux inf) ;
 MAP (@ICV @ADVL) TARGET (V aux sup ill) ; 
 MAP (@FCV @ICV) TARGET (V aux quot ps) ;
+MAP (@ADVL) TARGET (ger) ;
 MAP (@FCV) TARGET (V aux) ;
 
 MAP (@ICV) TARGET (V mod partic neg) ;
@@ -177,8 +178,9 @@ ADD (@FMV) TARGET (V) ;
 
 #kaassõnad
 ADD (@P>) TARGET (S sg) (1C (K post <nom>)) ; # TP MAP -> ADD 36475
-ADD (@P>) TARGET (S gen) OR (P gen) OR (N gen) (*1 (K post) BARRIER FinV); #TP
-ADD (@<P) TARGET (S gen) OR (P gen) OR (N gen) (*-1 (K pre) BARRIER FinV); #TP
+ADD (@P>) TARGET (S nom) OR (N nom) (*1C (K post <nom>) BARRIER FinV) ; 
+#ADD (@P>) TARGET (S gen) OR (P gen) OR (N gen) (*1 (K post) BARRIER FinV); #TP
+#ADD (@<P) TARGET (S gen) OR (P gen) OR (N gen) (*-1 (K pre) BARRIER FinV); #TP
 ADD (@P>) TARGET (S gen) OR (P gen) OR (N gen) (*1 (<gen>) BARRIER FinV); 
 ADD (@<P) TARGET (S gen) OR (P gen) OR (N gen) (*-1 (<gen>) BARRIER FinV); 
 ADD (@P>) TARGET (S part) OR (P part) OR (N part) (*1 (<part>) BARRIER FinV); 
@@ -207,20 +209,24 @@ ADD (@<KN) TARGET (K) (*-1 SbPr BARRIER FinV);
 #kvantorid
 ADD (@<Q) TARGET (S) OR (P) OR (N card) OR (Y nominal) (NOT 0 SbPr + (nom))
 	(*-1 KompKvAdv OR KvPron OR NimKv OR Täis OR KvAdv OR ArvKv OR ArvKvErand BARRIER FinV OR (nom) OR (sub) LINK NOT 0 ("üks") OR (pl)); # TP +Y(a., km...) +nom Kvantor asendatud + LINK NOT 0 ("üks") or pl + (NOT 0 SbPr + (nom))
+ADD (@Q>) TARGET (S) OR (P) OR (N card) OR (Y nominal) (1 Täis) ;
 
+	
+	
 #öeldistäited
-ADD (@PRD) TARGET (S nom) OR (S part) OR (P nom) OR (P part) OR (A nom) OR (A part) OR (N nom) OR (N part) OR (G) (*-1 Prverb);
-ADD (@PRD) TARGET (S nom) OR (S part) OR (P nom) OR (P part) OR (A nom) OR (A part) OR (N nom) OR (N part) OR (G) (*1 Prverb);
+ADD (@PRD) TARGET (S nom) OR (S part) OR (P nom) OR (P part) OR (A nom) OR (A part) OR (N nom) OR (N part) OR (G) OR (N digit) (*0 Prverb);
+
 
 #sihitis
-ADD (@OBJ) TARGET (S nom) OR (S sg gen) OR (S part) OR (P nom) OR (P sg gen) OR (P part) OR (N card nom) OR (N card part) OR (Y nominal);
+ADD (@OBJ) TARGET (S nom) OR (S sg gen) OR (S part) OR (P nom) OR (P sg gen) OR (P part) OR (N card nom) OR (N card part) OR (N card digit) OR (Y nominal);
 # sl: Tulemusena anti lastekodule rohkem kui 3000 krooni, hulgaliselt D OBJ mänguasju ja raamatuid.
 
 #alus
-ADD (@SUBJ) TARGET (S nom) OR (S part) OR (P nom) OR (P part) OR (N card) OR (Y nominal);
+ADD (@SUBJ) TARGET (S nom) OR (S part) OR (P nom) OR (P part) OR (N card nom) OR (N card part) OR (N card digit) OR (Y nominal);
 # TP ADD (@SUBJ) TARGET (S nom) OR (S part) OR (P nom) OR (P part) OR (N card nom) OR (N card part) OR (Y nominal);
 ADD:TP (@SUBJ) TARGET (S cap) (1 ("et"))(2 ("al")) ;
 ADD:TP (@SUBJ) TARGET (S <->) (1 Kvm OR (J));
+
 
 MAP (@ADVL) TARGET (S) OR (P) OR Arv OR Adv OR (K) OR Adj OR (Y) OR (X);
 MAP (@J) TARGET (J);
@@ -277,6 +283,13 @@ LIST KedaMida = ("kes" P sg part)("mis" P sg part);
 
 #0 ERANDID (TP)
 
+LIST kohacase = adit ill in el all ad abl tr term es abes kom ;
+REMOVE (N card @SUBJ) (0 kohacase);
+REMOVE (N card @OBJ) (0 kohacase);
+REMOVE (N card @PRD) (0 kohacase);
+REMOVE (N card gen @SUBJ) ;
+REMOVE (N card gen @PRD) ;
+
 REMOVE (<-> @SUBJ) (1 Kvm OR (J))(NOT 2 (nom) OR (part)); # TP
 REMOVE (<-> @OBJ) (1 Kvm OR (J))(NOT 2 NGP); # TP
 REMOVE (<-> @NN>) (1 Kvm OR (J))(NOT 2 (gen)); # TP
@@ -290,7 +303,7 @@ SELECT ("ise" gen @NN>) (1 SbPr);
 SELECT ("ise" @ADVL) ;
 SELECT ("kell" @NN>) (1 (card));
 SELECT (N card @ADVL) (-1 ("kell"));
-REMOVE ("see" @SUBJ) (*1 (inf) BARRIER CLBC);
+#REMOVE ("see" @SUBJ) (*1 (inf) BARRIER CLBC);
 
 #I OELDISEGRAMMATIKA
 
@@ -311,28 +324,28 @@ REMOVE (partic past imps @IMV) OR (partic past imps @ICV) (1 Sid|Kvm)(*-1 Sid|Kv
 SELECT (partic past imps @IMV) OR (partic past imps @ICV) (*-1 ("saa" ps3 sg) BARRIER Verb OR CLB); 
 
 # d)välja arvatud
-REMOVE ("arva" partic past imps @IMV) (-1 ("välja")) (NOT *-1 (aux) BARRIER CLBC);
+REMOVE ("arva" partic past imps @IMV) (-1 ("välja")) (NEGATE *-1 (aux) BARRIER CLBC);
 
 
 # e) kaudne kõneviis
-SELECT (partic past imps @IMV) (NOT *-1 FinV)(NOT *1 FinV);
+SELECT (partic past imps @IMV) (NOT *0 FinV);
 
 #2) Da-infinitiiv       
 
 # da-infinitiiv on infiniitne öeldis või ahelverbi infiniitne komponent,
 # kui osalauses leidub da-infinitiivi nõudev modaalverb suvalises vormis
+LIST dainf = ("saa" mod) ("või" mod);
 
-SELECT (inf @IMV) OR (inf @ICV) (*-1C (dainf) BARRIER FinV OR Inf OR CLB);
-SELECT (inf @IMV) OR (inf @ICV) (*1C (dainf) BARRIER FinV OR Inf OR CLB);
+SELECT (inf @IMV) OR (inf @ICV) (*0C dainf BARRIER FinV OR Inf OR CLB);
 
-# da-infinitiiv on öeldis, kui osalause algab sõnaga "et"
-SELECT (inf @IMV) OR (inf @ICV) (-1 ("et"));
+# da-infinitiiv on öeldis, kui osalause algab sõnaga "et" ja ta on ainus
+SELECT (inf @IMV) OR (inf @ICV) (-1 ("et")) (NEGATE *1 (inf) BARRIER CLB);
 
 
 # da-infinitiiv on öeldis, kui osaluses ei leidu verbi finiitseid vorme
-SELECT (inf @IMV) (NOT *-1 FinV BARRIER CLBC)
-                        (NOT *1 FinV BARRIER CLBC)
-                        (NOT *-1 Inf BARRIER CLBC) ;
+SELECT (inf @IMV) (NEGATE *0 FinV BARRIER CLBC)
+                  (NEGATE *0 Inf BARRIER CLBC) ;
+SELECT (inf @IMV) (c (inf))(NEGATE *0 FinV BARRIER CLBC);                  
 
 # viga tekib kiilu korral: ülempreester ei tahtnud loomulikult sellist
 # rahakat ning -mis veel tähtsam! - väga mõjuvõimast külalist minema _lasta_
@@ -340,7 +353,7 @@ SELECT (inf @IMV) (NOT *-1 FinV BARRIER CLBC)
 # Predikaadi koosseisu kuulub olema ja da-infinitiivsete verbide
 # teadma, nägema, märkama jne ühend.
 SELECT (inf @IMV) (0 OleDaInf) (*-1C ("ole" main <FinV>) BARRIER CLB)
-              (NOT *-1 (nom) BARRIER CLB) (NOT *-1 Vaja BARRIER CLB);
+              (NEGATE *-1 (nom) BARRIER CLB) (NEGATE *-1 Vaja BARRIER CLB);
 # Deskriptiivverbid
 SELECT (inf @IMV) (-1 FinV)(NOT -1 ("ole"))(NOT -1 (<InfP>))
                         (NOT -1 Yhepöördeline)
@@ -358,7 +371,7 @@ REMOVE (inf @IMV) (*-1 Inf BARRIER FinV LINK NOT 0 IFV LINK 1 JaVoiK);
 # ma-infinitiiv on infiniitne öeldis või ahelverbi infiniitne komponent,
 # kui osalauses leidub ma-infinitiivi nõudev modaalverb suvalises vormis
 
-SELECT (sup ill @IMV) OR (sup ill @ICV) (*-1 ("pida" mod) BARRIER CLBC);
+SELECT (sup ill @IMV) OR (sup ill @ICV) (*-1 ("pida" mod) BARRIER CLBC) (NEGATE *-1 (sup ill) BARRIER CLBC);
 SELECT (sup ill @IMV) OR (sup ill @ICV) (1 ("pida" mod));
 
 # ma-infinitiiv on infiniitne öeldis või ahelverbi infiniitne komponent, kui
@@ -382,12 +395,18 @@ REMOVE (sup ill @IMV) OR (sup ill @ICV) (*-1 (sup ill) BARRIER FinV LINK NOT 0 I
 # vat-infinitiiv on infiniitne öeldis või ahelverbi infiniitne komponent,
 # kui osalauses leidub vat-infinitiivi nõudev modaalverb suvalises vormis
 
-SELECT (quot pres ps @IMV) OR (quot pres ps @ICV) (*-1 AhelVat BARRIER CLBC);
-SELECT (quot pres ps @IMV) OR (quot pres ps @ICV) (*1 AhelVat BARRIER CLBC);
+SELECT (quot pres ps @IMV) OR (quot pres ps @ICV) (*0 AhelVat BARRIER CLBC);
 
-REMOVE (quot pres ps @FMV) (*-1C (@FMV) BARRIER CLBC);
-REMOVE (quot pres ps @FMV) (*1C (@FMV) BARRIER CLBC);
-SELECT (quot pres ps @FMV) (NOT *-1 FinV);
+REMOVE (quot pres ps @FMV) (*0C (@FMV) BARRIER CLBC);
+SELECT (quot pres ps @FMV) (NEGATE *0 FinV BARRIER (CLB));
+
+#konkreetsed kombinatsioonid
+
+#teada saama
+
+SELECT ("tead" @OBJ) (*0 ("saa" main) BARRIER CLB);
+SETPARENT ("tead" @OBJ) TO (*0 ("saa" main) BARRIER CLB);
+SETPARENT ("mahti") TO (*0 ("saa" main) BARRIER CLB);
 
 #KONKREETSED REEGLID
 
@@ -452,47 +471,44 @@ SELECT (P indef tr @NN>) (1 (P dem tr));
 SELECT (P indef gen @NN>) (1 (P dem))(1 NiNaTaGa);
 
 
-REMOVE (@NN>) (0 (P indef))(NOT 1 (P indef) OR (P dem) OR (N ord) OR (A))
-	      (NOT *1 (S) BARRIER CLB); # TP +(A)
-REMOVE (@NN>) (0 (P indef))(NOT 1 (P indef) OR (P dem) OR (N ord))
+REMOVE (P indef @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord) OR (A))
+	      (NEGATE *1 (S) BARRIER CLB); # TP +(A)
+REMOVE (P indef @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
               (*1 NPpiir BARRIER (S) OR (P) OR CLB); # TP +(P)
-REMOVE (@NN>) (0 (P indef))(0 NiNaTaGa)(NOT 1 (<mine>));
+REMOVE (P indef @NN>) (0 NiNaTaGa)(NOT 1 (<mine>));
 
-REMOVE (@NN>) (0 (P indef nom))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S nom) BARRIER CLB);
+REMOVE (P indef nom @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S nom) BARRIER CLB);
 
-REMOVE (@NN>) (0 (P indef part))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S part) BARRIER CLB);
+REMOVE (P indef part @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S part) BARRIER CLB);
 
-#REMOVE (@NN>) (0 (P indef part))
-#              (*1 (A part) BARRIER CLB OR (part));   
-#TP ainuke kord rakendus ja siis kustutas õige: mitmeid keemilisi protsesse
-
-REMOVE (@NN>) (0 (P indef))(0 IllAdt)(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S) + IllAdt BARRIER CLB);
-REMOVE (@NN>) (0 (P indef in))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S in) BARRIER CLB);
-REMOVE (@NN>) (0 (P indef el))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S el) BARRIER CLB);
-REMOVE (@NN>) (0 (P indef all))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S all) BARRIER CLB);
-REMOVE (@NN>) (0 (P indef ad))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S ad) BARRIER CLB);
-REMOVE (@NN>) (0 (P indef abl))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (S abl) BARRIER CLB);
-REMOVE (@NN>) (0 (P indef tr))(NOT 1 (P indef) OR (P dem) OR (N ord))
-              (NOT *1 (tr) BARRIER CLB); # TP -S
-REMOVE (@NN>) (0 (P indef nom))(1 (P indef))(NOT 1 (nom));
-REMOVE (@NN>) (0 (P indef gen))(1 (P indef))(NOT 1 (gen))(NOT 1 NiNaTaGa);
-REMOVE (@NN>) (0 (P indef part))(1 (P indef))(NOT 1 (part));
-REMOVE (@NN>) (0 (P indef))(0 IllAdt)(1 (P indef))(NOT 1 IllAdt);
-REMOVE (@NN>) (0 (P indef in))(1 (P indef))(NOT 1 (in));
-REMOVE (@NN>) (0 (P indef el))(1 (P indef))(NOT 1 (el));
-REMOVE (@NN>) (0 (P indef ad))(1 (P indef))(NOT 1 (ad));
-REMOVE (@NN>) (0 (P indef all))(1 (P indef))(NOT 1 (all));
-REMOVE (@NN>) (0 (P indef abl))(1 (P indef))(NOT 1 (abl));
-REMOVE (@NN>) (0 (P indef tr))(1 (P indef))(NOT 1 (tr));
-REMOVE (@NN>) OR (@<NN) (0 ("miski" P sg part));
+REMOVE (P indef @NN>) (0 IllAdt)(NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S) + IllAdt BARRIER CLB);
+REMOVE (P indef in @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S in) BARRIER CLB);
+REMOVE (P indef el @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S el) BARRIER CLB);
+REMOVE (P indef all @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S all) BARRIER CLB);
+REMOVE (P indef ad @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S ad) BARRIER CLB);
+REMOVE (P indef abl @NN>) (0 (P indef abl))(NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (S abl) BARRIER CLB);
+REMOVE (P indef tr @NN>) (NOT 1 (P indef) OR (P dem) OR (N ord))
+              (NEGATE *1 (tr) BARRIER CLB); # TP -S
+REMOVE (P indef nom @NN>) (1 (P indef))(NOT 1 (nom));
+REMOVE (P indef gen @NN>) (1 (P indef))(NOT 1 (gen))(NOT 1 NiNaTaGa);
+REMOVE (P indef part @NN>) (1 (P indef))(NOT 1 (part));
+REMOVE (P indef @NN>) (0 IllAdt)(1 (P indef))(NOT 1 IllAdt);
+REMOVE (P indef in @NN>) (1 (P indef))(NOT 1 (in));
+REMOVE (P indef el @NN>) (1 (P indef))(NOT 1 (el));
+REMOVE (P indef ad @NN>) (1 (P indef))(NOT 1 (ad));
+REMOVE (P indef all @NN>) (1 (P indef))(NOT 1 (all));
+REMOVE (P indef abl @NN>) (1 (P indef))(NOT 1 (abl));
+REMOVE (P indef tr @NN>) (1 (P indef))(NOT 1 (tr));
+REMOVE ("miski" P sg part @NN>); 
+REMOVE ("miski" P sg part @<NN);
 
 #Demonstratiivpronoomenid
 SELECT (P dem nom @NN>) (NOT -1 ("kõik"))
@@ -603,7 +619,7 @@ SELECT (P pos ad @NN>) (*1 (S ad) BARRIER Oeldis OR Võrdlus OR CLB);
 SELECT (P pos abl @NN>) (*1 (S abl) BARRIER Oeldis OR Võrdlus OR CLB);
 SELECT (P pos tr @NN>) (*1 (S tr) BARRIER Oeldis OR Võrdlus OR CLB);
 
-REMOVE:XTP (P pers @ADVL) (0 NGP); # TP: ei tule pähe, et saaks olla
+#REMOVE:XTP (P pers @ADVL) (0 NGP); # TP: ei tule pähe, et saaks olla
 REMOVE (P pers nom @NN>) ; # TP: tingimus (0 (P pers nom)) läks sihti, muidu kustutas ka gen!!! Ka kõik teised reeglid !!!
 REMOVE (P pers nom @<NN) (NOT *-1 (Col) BARRIER (Col) OR CLB); # TP: sama
 
@@ -630,8 +646,8 @@ SELECT:XTP ("al" @SUBJ) (-1 ("et"))(-3 (prop @SUBJ) OR (cap @SUBJ));
 SELECT:XTP (@ADVL) (0 (N card))(-1 (Com))(-2 (@SUBJ))(1 (Cpr));
 # aastaarv viidete taga sulgudes (pole küll subjektigrammatika, aga olgu siin koos)
 
-REMOVE:XTP (S nom @SUBJ) OR (S @OBJ) (0 NimKv)(NOT 1 (part)); # aasta tegija
-REMOVE:XTP (S gen @<Q) (-1 NimKv + (@NN>)); # aasta tegija
+#REMOVE:XTP (S nom @SUBJ) OR (S @OBJ) (0 NimKv)(NOT 1 (part)); # aasta tegija
+REMOVE:XTP (S gen @<Q) (-1C NimKv + (@NN>)); # aasta tegija
 REMOVE:XTP (S gen @<Q) (0 (@NN>) + (cap))(1 SPAN); 
 SELECT:XTP (S gen @<Q) (0 NimKv)(-1 (N card))(NOT 1 (part)); # üle saja meetri ellipsoidi pinnast
 SELECT:XTP (S gen @NN>) (-1 (N card))(1 (el));
@@ -681,7 +697,7 @@ SELECT (sg gen @<Q) (-1 ArvKv)(NOT -1 ("üks"))(1 (K post <gen>)); # TP
 
 # Adjühik - kvantori ja sona vahel ei tohi olla aastane, meetrine jne
 SELECT (sg gen @<Q) (*-1 ArvKv + (sg gen) ^ ("üks") BARRIER CLB OR Oeldis OR Subjekt OR (@<Q) OR Adjühik )(NOT 0 ArvKv)(NOT 0 Raha)
-(NOT *1 (sg gen) BARRIER CLB OR NPpiir OR (post <gen>));
+(NEGATE *1 (sg gen) BARRIER CLB OR NPpiir OR (post <gen>));
 
 SELECT (sg gen @<Q) (*-1 ArvKv + (sg gen) ^ ("üks") BARRIER CLB OR Oeldis OR Subjekt OR (@<Q) OR Adjühik )(NOT 0 ArvKv)(NOT 0 Raha)
 (1 (S) OR (P))(NOT 1 (gen));
@@ -718,27 +734,37 @@ SELECT (pl part @<Q) (-1 Koma)(NOT -1 (CLB))(-2 (pl part))(-2C (@<Q));
 
 # 5) Märgendi eemaldamise reeglid
 # Kui sona pole osastavas käändes ja ükski eelnev reegel teda @<Q-ks ei määranud, siis ta seda ka pole
-REMOVE (@<Q) (NOT 0 (part) OR (gen))(NOT *-1 (digit) BARRIER CLB); # TP gen vabanemisel
+#REMOVE (@<Q) (NOT 0 (part) OR (gen))(NEGATE *-1 (digit) BARRIER CLB); # TP gen vabanemisel
+REMOVE (@<Q) (NOT 0 (part)) (NEGATE *-1 (digit) BARRIER CLB); 
 REMOVE (@<Q) (NOT 0 (part))(*-1 (ord digit) BARRIER CLB OR (card));
 
 # Kui eespool ei ole kvantoreid;
-REMOVE (sg @<Q) (NOT *-1 ArvKv OR NimKv OR KvAdv BARRIER CLB OR Oeldis);
-REMOVE (pl @<Q) (NOT *-1 NimKv OR KvAdv BARRIER CLB OR Oeldis);
+REMOVE (sg @<Q) (NEGATE *-1 ArvKv OR NimKv OR KvAdv BARRIER CLB OR Oeldis);
+REMOVE (pl @<Q) (NEGATE *-1 NimKv OR KvAdv BARRIER CLB OR Oeldis);
+REMOVE (@<Q) (-1 (S))(-2 (ord)); # 1989. aasta valimisi
 
-REMOVE (@<Q) (NOT *-1 ArvKv OR NimKv BARRIER CLB)
+
+REMOVE (@<Q) (NEGATE *-1 ArvKv OR NimKv BARRIER CLB)
              (NOT -1 KvAdv)(NOT -2 KvAdv)(NOT -3 KvAdv);
-REMOVE (sg @<Q) (NOT *-1 ArvKv OR KvAdv BARRIER CLB)
+REMOVE (sg @<Q) (NEGATE *-1 ArvKv OR KvAdv BARRIER CLB)
              (*-1 NimKv + Pl);
-REMOVE (@<Q) (*-1 ArvKv BARRIER CLB LINK *1C (@<Q) BARRIER NimKv OR KvAdv OR ArvKv);
+REMOVE (@<Q) (*-1 ArvKv BARRIER CLB)(*1C (@<Q) BARRIER NimKv OR KvAdv OR ArvKv);
+REMOVE (@<Q) (*-1 ArvKv BARRIER CLB)(1C (@<Q));
 REMOVE (part @<Q) (-1 JaVoi)(-2 (part))(NOT -2 (@<Q));
 REMOVE (@<Q) (-1 Verb);
 REMOVE (@<Q) (*-1 ArvKv BARRIER CLB OR NimKv OR KvAdv LINK 1 Adjühik);
 REMOVE (part @<Q) (*-1 NimKv BARRIER CLB OR ArvKv LINK NOT 0 (nom) OR (gen) OR (part));
 SELECT (@<Q) (NOT 0 (gen))(NOT -1 (Com))
 	(*-1 NimKv OR ArvKv OR KvAdv BARRIER NotEestäiend OR CLB LINK 0 (nom) LINK NOT 1 (Com)); #TP +-1Com
-SELECT (@<Q) (NOT -1 (Com))(NOT *1 (@<Q) BARRIER NotEestäiend)
+SELECT (@<Q) (NOT -1 (Com))(NEGATE *1 (@<Q) BARRIER NotEestäiend)
 	(*-1 NimKv OR ArvKv OR KvAdv BARRIER NotEestäiend OR CLB LINK 0 (nom) LINK NOT 1 (Com)); #TP eelmine löödud kaheks: kas järgm pole <Q või ise pole gen
 REMOVE (digit @<Q) (-1 (Y));
+#Kui sõna võib olla kvantori laiend ja kvantor ise võib olla alus, siis
+#kustuta subjekti märgend
+#Laual oli kuhi musti toidunõusid
+REMOVE (@SUBJ)(0 (@<Q))(NOT 0 (nom))
+        (*-1 NimKv + Subjekt OR ArvKv + Subjekt OR KvAdv + Subjekt BARRIER CLB LINK NOT 1 (Com));
+
 
 #VIII KAASSONAFRAASI KUULUVAD POHJAD
 
@@ -756,28 +782,28 @@ REMOVE (@P>) (-1 NimKv OR ArvKv OR KvAdv)(0 Eestäiend)(1C (@<Q))(2 (post));
 # sona peab ka eessonaga ühilduma
 SELECT (term @<P) (*-1 (pre <term>) BARRIER CLBC);
 SELECT (all @<P) (*-1 (pre <all>) BARRIER CLBC);
-SELECT (el @<P) (*-1 (pre <el>) BARRIER CLBC)(NOT *1 (el) BARRIER CLBC);
+SELECT (el @<P) (*-1 (pre <el>) BARRIER CLBC)(NEGATE *1 (el) BARRIER CLBC);
 SELECT (abl @<P) (*-1 (pre <abl>) BARRIER CLBC);
 SELECT (kom @<P) (*-1 (pre <kom>) BARRIER CLBC);
 
 SELECT (part @<P) (*-1C (pre <part>) BARRIER (part @<P) OR CLBC)
              (*1 NPpiir BARRIER (part @<P) OR CLBC);
 SELECT (part @<P) (*-1C (pre <part>) BARRIER (part @<P) OR CLBC)
-             (NOT *1 (part @<P) BARRIER CLBC);
+             (NEGATE *1 (part @<P) BARRIER CLBC);
 SELECT (part @<P) (*-1C (pre <part>) BARRIER (part @<P) OR CLBC)
              (1 ("ja") OR ("ning"));
 
 SELECT (gen @<P) (*-1C (pre <gen>) BARRIER (gen @<P) OR CLBC)
              (*1 NPpiir BARRIER (gen @<P) OR CLBC);
 SELECT (gen @<P) (*-1C (pre <gen>) BARRIER (gen @<P) OR CLBC)
-             (NOT *1 (gen @<P) BARRIER CLBC);
+             (NEGATE *1 (gen @<P) BARRIER CLBC);
 SELECT (gen @<P) (*-1C (pre <gen>) BARRIER (gen @<P) OR CLBC)
              (1 ("ja") OR ("ning"));
 
 #2) Lauses ei leidu teisi kaassonafraasi kuuluvaid pohju
-SELECT (@P>) (NOT *-1 (@P>) BARRIER CLBC OR Oeldis)
+SELECT (@P>) (NEGATE *-1 (@P>) BARRIER CLBC OR Oeldis)
              (*1C (post) BARRIER (@P>) OR CLBC);
-SELECT (@<P) (NOT *1 (@<P) BARRIER CLBC OR Oeldis)
+SELECT (@<P) (NEGATE *1 (@<P) BARRIER CLBC OR Oeldis)
              (*-1C (pre) BARRIER (@<P) OR CLBC);
 
 #3) Juba leidus postpositsiooni pohi
@@ -791,9 +817,9 @@ REMOVE (@<P) (*-1 (pre) BARRIER CLB OR Sid|Kvm LINK *1C (@<P));
 REMOVE (@<P) (*-1 (pre) BARRIER CLB)(*1C (@<P) BARRIER CLB OR Sid|Kvm);
 
 # 4) Antud sona ja kaassona vahele jääb verb
-REMOVE (@P>) (NOT *1 (post) BARRIER CLB);
+REMOVE (@P>) (NEGATE *1 (post) BARRIER CLB);
 REMOVE (@P>) (*1 Oeldis BARRIER (post) OR CLB);
-REMOVE (@<P) (NOT *-1 (pre) BARRIER CLB);
+REMOVE (@<P) (NEGATE *-1 (pre) BARRIER CLB);
 REMOVE (@<P) (*-1 Oeldis BARRIER (pre) OR CLB);
 
 #7) Koordinatsioon
@@ -865,9 +891,9 @@ REMOVE (S pl nom @SUBJ) OR (P pl nom @SUBJ)
 REMOVE (S pl nom @SUBJ) OR (P pl nom @SUBJ)
                (*1 (sg <FinV>) BARRIER Sid|Kvm OR CLBC);
 REMOVE (sg nom @SUBJ) (*-1 (pl <FinV>) BARRIER Sid|Kvm OR CLBC LINK NOT 0 (sg))
-               (NOT *1 (@<Q) BARRIER CLBC)(NOT 1 Sid|Kvm); # TP +NOT0sg
+               (NEGATE *1 (@<Q) BARRIER CLBC)(NOT 1 Sid|Kvm); # TP +NOT0sg
 REMOVE (sg nom @SUBJ) (*-1 (pl <FinV>) BARRIER Sid|Kvm OR CLBC)
-               (NOT *1 (@<Q) BARRIER CLBC)(1 Koma)(NOT *1 (S) BARRIER CLBC);
+               (NEGATE *1 (@<Q) BARRIER CLBC)(1 Koma)(NEGATE *1 (S) BARRIER CLBC);
 
 # sõna partitiivis ei ole subjekt, kui osalauses leidub verb mitmuses
 REMOVE (part @SUBJ) (*-1C (V pl) BARRIER CLBC) ;
@@ -894,7 +920,7 @@ SELECT ("sina" pl nom @SUBJ) OR ("sa" pl nom @SUBJ) (*1 (V ps2 pl) BARRIER CLB);
 # 3) Unikaalsus
 # kui osalauses leidub ühene subjekt, siis rohkem subjekte olla ei saa,
 # välja arvatud koordineeritud subjektid
-REMOVE (@SUBJ) (*-1C Subjekt BARRIER Sid|Kvm OR CLBC)(NOT 0 (prop));
+REMOVE:test (@SUBJ) (*-1C (@SUBJ) BARRIER Sid|Kvm OR CLBC);
 # Vead tekivad selletõttu, et kuskil midagi valesti määratud.
 # Töömees on _eestlane_ küll, ...
 # nad hoidsid teda ka nagu minu _vanemad_ mind
@@ -910,11 +936,11 @@ REMOVE (@SUBJ) (*1C Subjekt BARRIER CLBC LINK *-1 FinV BARRIER Sid|Kvm);
 REMOVE (@SUBJ) (0 (nom))(1C (prop nom))(1 Subjekt)(NOT 0 (P indef) OR (P pers));
 # substantiiv või pronoomen partitiivi mitmuses on subjekt, kui osalauses
 # pole muud ühest subjekti ja öeldiseks on verb "olema"
-SELECT (S pl part @SUBJ) OR (P pl part @SUBJ) (*-1 ("ole") BARRIER Verb OR CLB)
-               (NOT *1 Verb BARRIER CLB)
-               (NOT *-1C Subjekt BARRIER CLB)
-               (NOT *1C Subjekt BARRIER CLB)
-               (NOT *-1 NimKv OR KvAdv OR ("üks") BARRIER CLB);
+SELECT:kahtlane (S pl part @SUBJ) OR (P pl part @SUBJ) 
+               (*-1 ("ole") BARRIER Verb OR CLB)
+               (NEGATE *1 Verb BARRIER CLB)
+               (NEGATE *0 Subjekt BARRIER CLB)
+               (NEGATE *-1 NimKv OR KvAdv OR ("üks") BARRIER CLB);
 # Viga tekkis enne: et on _teisigi_ Partei vaenlasi
 
 # sõna partitiivis pole subjekt, kui talle järgneb da-infinitiivne öeldis
@@ -930,34 +956,40 @@ REMOVE (P sg nom @SUBJ) (1 (S sg nom))(-1 ("ole"))
 # sõna partitiivis pole subjekt, kui öeldis on sellest sõnast paremal ja
 # öeldisest paremal osalauses leidub nimi- või asesõna nominatiivis
 # Kombinatsioon Subj(part) Fv Obj(nom,gen) esineb va"ga harva
-REMOVE (part @SUBJ) (NOT *-1 Oeldis BARRIER CLB)
+REMOVE (part @SUBJ) (NEGATE *-1 Oeldis BARRIER CLB)
                (*1C Oeldis BARRIER (Z) OR CLB)
                (*1 (S nom) OR (P nom) BARRIER CLB LINK NOT 0 Aeg);
 
 # da-infinitiivid
-SELECT (inf @SUBJ) (NOT *-1 Inf BARRIER CLB)
-           (NOT *1 Inf BARRIER CLB)
+SELECT (inf @SUBJ) (NEGATE *-1 Inf BARRIER CLB)
+           (NEGATE *1 Inf BARRIER CLB)
            (*-1 Suutelisusv OR Emotsioonv OR Sobivusv BARRIER CLB LINK 0C Oeldis);
-SELECT (inf @SUBJ) (NOT *-1 Inf BARRIER CLB)
-           (NOT *1 Inf BARRIER CLB)
+SELECT (inf @SUBJ) (NEGATE *-1 Inf BARRIER CLB)
+           (NEGATE *1 Inf BARRIER CLB)
            (*1 Suutelisusv OR Emotsioonv OR Sobivusv BARRIER CLB LINK 0C Oeldis);
-SELECT (inf @SUBJ) (NOT *-1 Inf BARRIER CLB)
-               (NOT *1 Inf BARRIER CLB)
+SELECT (inf @SUBJ) (NEGATE *-1 Inf BARRIER CLB)
+               (NEGATE *1 Inf BARRIER CLB)
                (*-1 Vajadusv BARRIER CLB OR (S nom) OR (P nom) LINK 0C Oeldis);
 # et vältida: tuli mõte tegema hakata
-SELECT (inf @SUBJ) (NOT *-1 Inf BARRIER CLB)
-               (NOT *1 Inf BARRIER CLB)
+SELECT (inf @SUBJ) (NEGATE *-1 Inf BARRIER CLB)
+               (NEGATE *1 Inf BARRIER CLB)
                (*1 Vajadusv BARRIER CLB LINK 0C Oeldis);
 
 SELECT (inf @SUBJ) (*-1 Vaja BARRIER CLBC);
 SELECT (inf @SUBJ) (*1 Vaja BARRIER CLBC);
 
+SELECT (inf @SUBJ) (*-1 Sid|Kvm BARRIER (CLB) LINK *-1C (inf @SUBJ) BARRIER (CLB));
+SELECT (inf @OBJ) (*-1 Sid|Kvm BARRIER (CLB) LINK *-1C (inf @OBJ) BARRIER (CLB));
+
+
+
+
 # da-infinitiiv on subjekt, kui osalauses: öeldiseks on "olema" (üksinda),
 # leidub predikatiiv ja puudub nimi- või asesõnaline nominatiivne subjekt
 SELECT (inf @SUBJ) (*-1C ("ole" main <FinV>) BARRIER CLB)
                (*-1C (@PRD) BARRIER CLB)
-               (NOT *-1 (S nom) OR (P nom) BARRIER CLB)
-               (NOT *1 (S nom) OR (P nom) BARRIER CLB);
+               (NEGATE *-1 (S nom) OR (P nom) BARRIER CLB)
+               (NEGATE *1 (S nom) OR (P nom) BARRIER CLB);
 #... aga voimatu oli seda täiesti välja lülitada
 #... muidugi oli täiesti voimatu ütelda
 
@@ -966,16 +998,14 @@ SELECT (inf @SUBJ) (*-1C ("ole" main <FinV>) BARRIER CLB)
 # osalauses vasakul ei esine muid sõnu nominatiivis ega partitiivis
 
 SELECT (inf @SUBJ) (-2 ("ole"))(-1C (@PRD))(-1 (nom))
-               (NOT *-2 (nom) BARRIER CLB)(NOT *-1 (part) BARRIER CLB);
+               (NEGATE *-2 (nom) BARRIER CLB)(NEGATE *-1 (part) BARRIER CLB);
 # Mul on raske uskuda vrs Laud on raske tosta
 # da-infinitiiv pole subjekt, kui lauses leiduvad nii nimi- voi asesona nimetavas kui osastavas käändes
 REMOVE (inf @SUBJ) (*-1 (S sg nom) OR (P sg nom) BARRIER CLB OR Verb LINK *1C (S part) OR (P part));
 
 # Nimetavas käändes sona on subjekt, kui lauses on ainult üks nominatiiv ja verb ei ole impersonaal jms.
 SELECT (nom @SUBJ) (NOT 0 Arv OR Verb)
-               (NOT *-1 Koma OR ("ja") OR ("ning") OR (S nom) OR (P nom) OR 
-                        (inf @SUBJ) OR Impl OR Imper OR (V ps1) OR (V ps2))
-               (NOT *1 Koma OR (S nom) OR (P nom) OR 
+               (NOT *0 Koma OR ("ja") OR ("ning") OR (S nom) OR (P nom) OR 
                         (inf @SUBJ) OR Impl OR Imper OR (V ps1) OR (V ps2))
                (NEGATE *1 (N card nom) BARRIER CLB LINK 1 (sg part) LINK NOT 0 Aeg)
                (NOT 1 Inf);
@@ -988,16 +1018,16 @@ SELECT (nom @SUBJ) (NOT 0 Arv)(*0 Verb BARRIER CLB)
                (NOT 1 Inf);
 # Viga: Või siis kusagilt tihnikust ohvrile vibunool kõrri lasta
 SELECT (nom @SUBJ) (NOT 0 Arv OR (prop))
-         (NOT *-1 Koma OR ("Cpr") OR ("ja") OR ("ning") OR SbPrNom OR 
+         (NEGATE *-1 Koma OR ("Cpr") OR ("ja") OR ("ning") OR SbPrNom OR 
          (inf @SUBJ) OR Impl OR Imper OR (V ps1) OR (V ps2) BARRIER CLB) 
-         (NOT *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR 
+         (NEGATE *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR 
                          (V ps1) OR (V ps2) BARRIER CLB)
          (*1 Koma BARRIER (S) OR (P) OR CLB)(*-1 FinV BARRIER CLB)
          (NOT -1 Partic)(NOT 1 Inf); 
 SELECT (prop nom @SUBJ) (NOT 1 (prop))
-               (NOT *-1 Koma OR ("ja") OR ("ning") OR SbPrNom OR 
+               (NEGATE *-1 Koma OR ("ja") OR ("ning") OR SbPrNom OR 
                (inf @SUBJ) OR Impl OR Imper OR (V ps1) OR (V ps2) BARRIER CLB)
-               (NOT *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR 
+               (NEGATE *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR 
                          (V ps1) OR (V ps2) BARRIER CLB)
                (*1 Koma BARRIER (S) OR (P) OR CLB)(*-1 FinV BARRIER CLB)
                (NOT -1 Partic)(NOT 1 Inf);      
@@ -1006,9 +1036,9 @@ SELECT (prop nom @SUBJ) (NOT 1 (prop))
 LIST Vps12 = (V ps1) (V ps2);
 
 SELECT (nom @SUBJ) (NOT 0 Arv)(*1 Koma BARRIER CLBC LINK NOT *1 (S) OR (P) BARRIER CLBC)
-               (NOT *-1 Koma OR Ja OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper
+               (NEGATE *-1 Koma OR Ja OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper
 		 OR Vps12 BARRIER CLBC)
-               (NOT *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12
+               (NEGATE *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12
                    BARRIER CLBC)
                (*1 (@FMV) OR (@FCV) BARRIER CLBC)(NOT 1 Inf);
 SELECT (sg nom @SUBJ) (1C (sg ps3))
@@ -1016,8 +1046,8 @@ SELECT (sg nom @SUBJ) (1C (sg ps3))
     (NOT *1 Koma OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12);
 
 SELECT (S nom @SUBJ) 
-   (NOT *-1 Ja OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12 BARRIER CLBC)
-   (NOT *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12 BARRIER CLBC)
+   (NEGATE *-1 Ja OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12 BARRIER CLBC)
+   (NEGATE *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12 BARRIER CLBC)
    (*-1 (@FMV) ^ Prverb OR (@FCV) ^ Prverb BARRIER CLBC)
    (NOT 1 Inf)(NOT -1 Võrdlus) ;
 
@@ -1026,9 +1056,9 @@ SELECT (S nom @SUBJ)
 #Lennartil läheb punast marlborot sigaret sigareti järel
 #Kas ei saaks tund aega
 SELECT (S nom @SUBJ) 
-               (NOT *-1 Ja OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR
+               (NEGATE *-1 Ja OR SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR
 		 Vps12 BARRIER CLB)
-               (NOT *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12
+               (NEGATE *1 SbPrNom OR (inf @SUBJ) OR Impl OR Imper OR Vps12
 		 BARRIER CLB)
                (*1 (@FMV) OR (@FCV) BARRIER CLB)(NOT 1 Inf);
 
@@ -1036,8 +1066,7 @@ SELECT (S nom @SUBJ)
 
 SELECT (nom @SUBJ) (NOT 0 (@ADVL))(NOT 1 (prop))
                (*-1 FinV ^ Impl BARRIER CLB LINK NOT -1 (J))
-               (NOT *-1 Subjekt OR Tud OR Imper OR Inf BARRIER CLB)
-               (NOT *1 Subjekt OR Tud OR Imper OR Inf BARRIER CLB);
+               (NEGATE *0 Subjekt OR Tud OR Imper OR Inf BARRIER CLB);
 
 #Viga: Viisid minema kõik kuld- ja hõberiistad.
 
@@ -1071,11 +1100,11 @@ SELECT ("kes" @SUBJ) (-1 Koma)(NOT *1 Impl);
 # Arv nimetavas käändes on subjekt, kui verb on mitmuse 3. pöördes ja osalauses
 # pole mitmuse nimetavat käänet.
 SELECT (N nom @SUBJ) (NOT 0 ("üks"))(*-1C (V ps3 pl) BARRIER CLB)
-                  (NOT *-1 (pl nom) OR Impl BARRIER CLB)
-                  (NOT *1 (pl nom) OR Impl BARRIER CLB);
+                  (NEGATE *-1 (pl nom) OR Impl BARRIER CLB)
+                  (NEGATE *1 (pl nom) OR Impl BARRIER CLB);
 SELECT (N nom @SUBJ) (NOT 0 ("üks"))(*1C (V ps3 pl) BARRIER CLB)
-                  (NOT *-1 (pl nom) OR Impl BARRIER CLB)
-                  (NOT *1 (pl nom) OR Impl BARRIER CLB);
+                  (NEGATE *-1 (pl nom) OR Impl BARRIER CLB)
+                  (NEGATE *1 (pl nom) OR Impl BARRIER CLB);
 # 5) Koordinatsioon
 # kui sõnade "nii" ja "kui ka" abil koordinatsioonis olevatest sõnadest üks
 # ei ole subjekt, siis ei ole seda ka teine
@@ -1126,62 +1155,62 @@ REMOVE (@SUBJ) (*-1 (OPar) BARRIER (CPar) OR FinV )
 SELECT (inf @OBJ) (*-1 (<InfP>) ^ Inf BARRIER CLB LINK NOT 1 JaVoi);
 SELECT (inf @OBJ) (*1 (<InfP>) BARRIER Koma OR CLB);
 SELECT (inf @OBJ) (1 (A partic past));
-REMOVE (inf @OBJ) (NOT *-1 (<InfP>) BARRIER CLBC)
-              (NOT *1 (<InfP>) BARRIER CLB);
+REMOVE (inf @OBJ) (NEGATE *-1 (<InfP>) BARRIER CLBC)
+              (NEGATE *1 (<InfP>) BARRIER CLB);
 
 # 2) öeldise vorm voi liik välistab objekti
 # a) öeldis on intransitiivne
-REMOVE (@OBJ) (NOT *-1 Verb BARRIER CLB)(NOT 1 Partic)
+REMOVE (@OBJ) (NEGATE *-1 Verb BARRIER CLB)(NOT 1 Partic)
               (*1C Intr&YV BARRIER Verb ^ Intr&YV ^ EiAra OR CLB 
-                   LINK NOT *1 Verb BARRIER CLBC);
+                   LINK NEGATE *1 Verb BARRIER CLBC);
 
-REMOVE (@OBJ) (NOT *1 Verb BARRIER CLB)(NOT 1 Partic)
+REMOVE (@OBJ) (NEGATE *1 Verb BARRIER CLB)(NOT 1 Partic)
               (*-1C Intr&YV BARRIER Verb ^ Intr&YV ^ EiAra OR CLB 
-                    LINK NOT *-1 Verb BARRIER CLB); 
+                    LINK NEGATE *-1 Verb BARRIER CLB); 
 
 # Vead: 
 # Nagu võiks mõnda teist inimest, kes ei ole nii arukas, sellega ära petta.
 # Ta tegi, ..., esikupeegli ees ... grimassi
 # Ta võttis pakist, kus oli ..., ühe sigareti.
 
-REMOVE (@OBJ) (NOT *1 Verb BARRIER CLB)(NOT 1 Partic)
+REMOVE (@OBJ) (NEGATE *1 Verb BARRIER CLB)(NOT 1 Partic)
               (*-1C Intr&YV BARRIER Verb ^ Intr&YV ^ EiAra OR CLB 
-                    LINK -1 Ei LINK NOT *-1 Verb BARRIER CLB); 
+                    LINK -1 Ei LINK NEGATE *-1 Verb BARRIER CLB); 
 
 REMOVE (@OBJ) (NOT 1 Partic)
               (*-1C Intr&YV BARRIER Verb ^ Intr&YV ^ EiAra OR CLB 
-                    LINK NOT *-1 Verb BARRIER CLB)
-              (*1C Intr&YV BARRIER Verb OR CLB LINK NOT *1 Verb BARRIER CLB); 
+                    LINK NEGATE *-1 Verb BARRIER CLB)
+              (*1C Intr&YV BARRIER Verb OR CLB LINK NEGATE *1 Verb BARRIER CLB); 
 
 REMOVE (@OBJ)(0 (sg nom))(*1C Intr&YV + main BARRIER Verb ^ Intr&YV ^ EiAra OR CLBC)
-             (NOT *1 Partic OR Inf BARRIER CLBC)(NOT *-1 Verb BARRIER CLBC);
+             (NEGATE *1 Partic OR Inf BARRIER CLBC)(NEGATE *-1 Verb BARRIER CLBC);
 
 # see oli olnud ...
-REMOVE (@OBJ) (NOT *-1 Verb BARRIER CLB)
+REMOVE (@OBJ) (NEGATE *-1 Verb BARRIER CLB)
               (*1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra 
-                   LINK *1C Intr&YV BARRIER CLB LINK NOT *1 Verb BARRIER CLB) ;
+                   LINK *1C Intr&YV BARRIER CLB LINK NEGATE *1 Verb BARRIER CLB) ;
 # Viga: Sammu sõitma hakkasime alles siis, ...
 
 #oli see olnud ...
-REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB LINK NOT *-1 Verb BARRIER CLB)
-              (*1C Intr&YV BARRIER CLB LINK NOT *1 Verb BARRIER CLB);
-REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB LINK -1  Ei LINK NOT *-1 Verb BARRIER CLB)
-              (*1C Intr&YV BARRIER CLB LINK NOT *1 Verb BARRIER CLB);
+REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB LINK NEGATE *-1 Verb BARRIER CLB)
+              (*1C Intr&YV BARRIER CLB LINK NEGATE *1 Verb BARRIER CLB);
+REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB LINK -1  Ei LINK NEGATE *-1 Verb BARRIER CLB)
+              (*1C Intr&YV BARRIER CLB LINK NEGATE *1 Verb BARRIER CLB);
 # ei olnud säilinud midagi
 # jäi korraks õhku rippuma nagu porikärbes
 REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra
                     LINK *-1C Intr&YV BARRIER CLB 
-                    LINK NOT *-1 Verb BARRIER CLB)
-              (NOT *1 Verb BARRIER CLB);
+                    LINK NEGATE *-1 Verb BARRIER CLB)
+              (NEGATE *1 Verb BARRIER CLB);
 
 REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB
                     LINK *-1C Intr&YV BARRIER CLB
                     LINK -1 Ei 
-                    LINK NOT *-1 Verb BARRIER CLB)
-              (NOT *1 Verb BARRIER CLB) ;
+                    LINK NEGATE *-1 Verb BARRIER CLB)
+              (NEGATE *1 Verb BARRIER CLB) ;
 REMOVE (@OBJ) (*-1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra
                     LINK *-1C Intr&YV BARRIER CLB OR Verb ^ Intr&YV ^ EiAra
-                    LINK NOT *-1 Verb BARRIER CLB)
+                    LINK NEGATE *-1 Verb BARRIER CLB)
               (*1 Kvm BARRIER Verb OR CLB);
 
 #b) öeldis on eitavas kones
@@ -1194,18 +1223,15 @@ LIST Tr = tr;
 LIST Mis = "mis";
 LIST Koik = "kõik";
 
-REMOVE (@OBJ) (0 NimOm)(NOT *1 Kysi OR Tud BARRIER CLB)
-              (*-1 Ei BARRIER CLB)
-              (NOT *-1 Tud BARRIER CLB);
-REMOVE (@OBJ) (0 NimOm)(NOT *1 Kysi OR Tud BARRIER CLB)
-              (*1 Ei BARRIER CLB)
-              (NOT *-1 Tud BARRIER CLB);
-REMOVE (gen @OBJ) (NOT *1 Kysi BARRIER CLB)(*-1 Ei BARRIER CLB);
-REMOVE (gen @OBJ) (NOT *1 Kysi BARRIER CLB)(*1 Ei BARRIER CLB);
+REMOVE (@OBJ) (0 NimOm)(NEGATE *1 Kysi OR Tud BARRIER CLB)
+              (*0 Ei BARRIER CLB)
+              (NEGATE *-1 Tud BARRIER CLB);
+REMOVE (gen @OBJ) (NEGATE *1 Kysi BARRIER CLB)(*0 Ei BARRIER CLB);
+
 
 #c) Isikuline tegumood välistab ainsuse nominatiivse objekti
-REMOVE (sg nom @OBJ) (NOT *-1 Impl OR Imper OR InfSupiin BARRIER CLBC)
-              (NOT *1 Impl OR Imper OR InfSupiin BARRIER CLBC)
+REMOVE (sg nom @OBJ) (NEGATE *-1 Impl OR Imper OR InfSupiin BARRIER CLBC)
+              (NEGATE *1 Impl OR Imper OR InfSupiin BARRIER CLBC)
               (NOT 0 Arv OR Mis OR Koik);
 # Viga: Palun see suurem sealt
 
@@ -1222,34 +1248,34 @@ LIST Ära = "ära";
 
 SELECT (@OBJ) (*-1 PartObjVerb BARRIER CLBC)
               (0 Par ^ Aeg)
-              (NOT *-1 (part @OBJ) OR Ära BARRIER CLBC )
-              (NOT *1 (part @OBJ) OR Ära BARRIER CLBC);
+              (NEGATE *-1 (part @OBJ) OR Ära BARRIER CLBC )
+              (NEGATE *1 (part @OBJ) OR Ära BARRIER CLBC);
 #Viga: Kui ülempreester ei tahtnud loomulikult _sellist_ rahakat ning -...
 
 SELECT (@OBJ) (*1 PartObjVerb BARRIER CLBC)
               (0 Par ^ Aeg)
-              (NOT *-1 (part @OBJ) OR Ära BARRIER CLBC )
-              (NOT *1 (part @OBJ) OR Ära BARRIER CLBC);
+              (NEGATE *0 (part @OBJ) OR Ära BARRIER CLBC );
+              
 
 REMOVE (@OBJ) (NOT 0 Par OR Inf OR Pl)
               (*-1 PartObjVerb + (ps) BARRIER CLB OR Verb ^ PartObjVerb 
                    LINK NOT *-1 Verb BARRIER CLB)
-              (NOT *1 Verb BARRIER CLB)
-              (NOT *-1 Tr OR Ära BARRIER CLB)(NOT *1 Tr OR Ära BARRIER CLB)
+              (NEGATE *1 Verb BARRIER CLB)
+              (NEGATE *0 Tr OR Ära BARRIER CLB)
               (NOT 1 Partic) ;
 
 REMOVE (@OBJ) (NOT 0 Par OR Inf OR Pl)
               (*1 PartObjVerb + (ps) BARRIER CLB OR Verb ^ PartObjVerb 
                    LINK NOT *1 Verb BARRIER CLB)
-              (NOT *-1 Verb BARRIER CLB)
-              (NOT *-1 Tr OR Ära BARRIER CLB)(NOT *1 Tr OR Ära BARRIER CLB)
+              (NEGATE *-1 Verb BARRIER CLB)
+              (NEGATE *0 Tr OR Ära BARRIER CLB)
               (NOT 1 Partic) ;
 
 #3) Erijuhud
 
 # Kui objekt ja subjekt on samas vormis, siis tavaliselt subjekt eelneb objektile
 REMOVE (@OBJ) (0 (@SUBJ pl nom))
-              (NOT *-1 Subjekt BARRIER CLB)
+              (NEGATE *-1 Subjekt BARRIER CLB)
               (*1 FinV BARRIER CLB LINK *1 (@OBJ pl nom) BARRIER Sid|Kvm OR CLB);
 # Esimeses kahes isikus isikulised asesonad ei ole nom objektid 
 REMOVE (@OBJ) (0 (P pers ps1 nom) OR (P pers ps2 nom));
@@ -1258,18 +1284,22 @@ REMOVE (@OBJ) (0 (P pers ps1 nom) OR (P pers ps2 nom));
 # objekt
 LIST AtrAdv = @NN> @<NN @ADVL;
 REMOVE (@OBJ) (0 (@SUBJ nom))(NOT 1 Partic)
-              (NOT *-1 InfSupiin BARRIER CLB)
-	      (NOT *-1 InfSupiin BARRIER CLB)
+              (NEGATE *0 InfSupiin BARRIER CLB)
               (*1 (@OBJ part) ^ AtrAdv BARRIER CLB);
 
+REMOVE (@OBJ) (0 (@SUBJ nom))(NOT 0 ("mis"))(NOT 1 Partic)
+              (NEGATE *0 InfSupiin BARRIER CLB)
+              (*1 (@OBJ pl nom) BARRIER Sid|Kvm OR CLB);
+              
+              
 # kombinatsioon Obj(nom/gen) Fv Subj(nom) ei ole võimalik
-
+#KONTROLLI!
 REMOVE (gen @OBJ) (NOT 1 Oeldis OR CLB)
-              (NOT *-1 Oeldis OR (V partic) BARRIER CLB)
+              (NEGATE *-1 Oeldis OR (V partic) BARRIER CLB)
               (*2C Oeldis BARRIER CLB LINK *1 SbPrNom BARRIER Kvm OR CLB);
 
-REMOVE (sg nom @OBJ) (NOT 0 Mis)(NOT *1 Ise BARRIER CLB)
-              (NOT *-1 Oeldis BARRIER CLB)
+REMOVE (sg nom @OBJ) (NOT 0 Mis)(NEGATE *1 Ise BARRIER CLB)
+              (NEGATE *-1 Oeldis BARRIER CLB)
               (*1C Oeldis BARRIER CLB LINK *1 SbPrNom BARRIER Sid|Kvm OR CLB);
 # On voimalik: ta sai aru, kui suure _asja_ ta on ette votnud
 # Juba tempel ise on püstitatud ...
@@ -1284,10 +1314,10 @@ LIST NudTudDes = (partic past) ger <nud> <tud>;
 
 #Kui nud-, tud- v_i des-vormile eelneb vahetult partitiiv , siit ta on objekt
 SELECT (@OBJ) (0 Par)(1 NudTudDes ^ Intr&YV)(NOT 0 (@<P) OR Aeg OR (P dem))
-              (NOT *-1 Neg BARRIER CLB);
+              (NEGATE *-1 Neg BARRIER CLB);
 
 SELECT (P dem part @OBJ) (1 NudTudDes ^ Intr&YV)(NOT 0 (@<P) OR Aeg)
-              (NOT *-1 Neg BARRIER CLB)(*1 NPpiir BARRIER Par OR CLB);
+              (NEGATE *-1 Neg BARRIER CLB)(*1 NPpiir BARRIER Par OR CLB);
 
 # Osastavas käändes sõna enne partitsiipi on suure tõenäosusega sihitis,
 # v.a. määrused
@@ -1309,6 +1339,11 @@ REMOVE ("oma" @OBJ) (1 (@OBJ part))(NOT 2 Partic OR InfSupiin);
 REMOVE (gen @OBJ) (1 (A part))(2 (@OBJ part))(NOT 3 Partic OR InfSupiin);
 REMOVE ("oma" @OBJ) (1 (A part))(2 (@OBJ part))(NOT 3 Partic OR InfSupiin);
 
+#konditsionaal (pole arvu)
+REMOVE (nom @OBJ) (0 (@SUBJ))(1 (cond))(*1 Objekt BARRIER CLB); 
+
+
+
 #4) Unikaalsus
 # kui osalauses ei leidu partitsiipe, gerundiive, supiine ega infinitiive
 # ning leidub kindel objekt, kusjuures ei leidu rinnastavaid komasid ega
@@ -1317,15 +1352,10 @@ REMOVE ("oma" @OBJ) (1 (A part))(2 (@OBJ part))(NOT 3 Partic OR InfSupiin);
 LIST SupInfGer = sup inf ger;
 
 REMOVE (@OBJ)(NOT 0 Inf)
-             (NOT *1 Partic OR SupInfGer BARRIER CLB)
-             (NOT *-1 Partic OR SupInfGer BARRIER CLB)
-             (*1C Objekt BARRIER Sid|Kvm OR CLB) ;
+             (NEGATE *0 Partic OR SupInfGer BARRIER CLB)
+             (*0C Objekt BARRIER Sid|Kvm OR CLB) ;
 #Viga tekkis siis, kui eelnevalt valesti määratud:
 #Laseks ta nooli täis nagu Püha Sebastianuse
-REMOVE (@OBJ)(NOT 0 Inf)
-             (NOT *1 Partic OR SupInfGer BARRIER CLB)
-             (NOT *-1 Partic OR SupInfGer BARRIER CLB)
-             (*-1C Objekt BARRIER Sid|Kvm OR CLB) ;
 
 #või vaeglauses
 #nemad hoidsid teda ka nagu minu vanemad mind
@@ -1339,16 +1369,20 @@ LIST Aux = aux;
 REMOVE (@OBJ)(*-1 Aux BARRIER CLB)
              (*1 Partic BARRIER CLB)
              (*1C Objekt BARRIER Sid|Kvm OR CLB)
-             (NOT *-1 SupInfGer BARRIER CLB)(NOT *1 SupInfGer BARRIER CLB);
+             (NEGATE *0 SupInfGer BARRIER CLB);
 REMOVE (@OBJ)(*-1 Aux BARRIER CLB)
              (*-1 Partic BARRIER CLB)
              (*-1C Objekt BARRIER Sid|Kvm OR CLB)
-             (NOT *-1 SupInfGer BARRIER CLB)(NOT *1 SupInfGer BARRIER CLB);
+             (NEGATE *0 SupInfGer BARRIER CLB);
 REMOVE (@OBJ)(*1 Aux BARRIER CLB)
              (*1 Partic BARRIER CLB)
              (*1C Objekt BARRIER Sid|Kvm OR CLB)
-             (NOT *-1 SupInfGer BARRIER CLB)(NOT *1 SupInfGer BARRIER CLB);
+             (NEGATE *0 SupInfGer BARRIER CLB);
 
+REMOVE (@OBJ)(*-1C FinV BARRIER CLB)
+             (*1C Objekt BARRIER Sid|Kvm OR CLB)
+             (NEGATE *0 SupInfGer BARRIER CLB);             
+             
 # 5) Koordinatsioon
 # kui koordinatsioonis olevatest samas vormis sonadest üks ei ole objekt,
 # siis ei ole seda ka teine
@@ -1410,6 +1444,8 @@ REMOVE (P @OBJ) (NOT 0 NGP);
 #8) Sona on sulgudes
 REMOVE (@OBJ) (*-1 OPar BARRIER CPar OR Oeldis LINK NOT -1 Objekt)
               (*1 CPar BARRIER OPar OR Oeldis);
+              
+              
 
 #IV PREDIKATIIVIGRAMMATIKA
 
@@ -1417,19 +1453,19 @@ LIST Ger = ger;
 
 #1) Osalauses on leitud öeldise osa, mis ei ole predikatiivi lubav
 REMOVE (@PRD) (*-1C IFV ^ Prverb BARRIER CLBC OR Kvm);
-REMOVE (@PRD) (*1C IFV ^ Prverb BARRIER CLBC)(NOT *1 (Dsh) BARRIER CLBC)
+REMOVE (@PRD) (*1C IFV ^ Prverb BARRIER CLBC)(NEGATE *1 (Dsh) BARRIER CLBC)
               (NOT 1 Koma);
 # Viga: See ei olnud siiski _ketserlus_, mis oli kirjutatud tema näkku, vaid
 # hoopis intelligents
 REMOVE (@PRD) (NOT 0 Nom)(*-1C IFV ^ ("ole") BARRIER CLBC);
 REMOVE (@PRD) (NOT 0 Nom)(*1C IFV ^ ("ole") BARRIER CLBC);
 REMOVE (@PRD) (*-1C (@FMV) ^ Prverb BARRIER Kvm OR CLBC) 
-              (NOT *-1 Prverb BARRIER CLBC)(NOT *1 Prverb BARRIER CLBC);
+              (NEGATE *0 Prverb BARRIER CLBC);
 REMOVE (@PRD) (*1C (@FMV)^ Prverb BARRIER CLBC)
-              (NOT *-1 Prverb BARRIER CLBC)(NOT *1 Prverb BARRIER CLBC);
+              (NEGATE *0 Prverb BARRIER CLBC);
 
 REMOVE (@PRD) (*-1 Koma BARRIER CLB LINK 1 Ger ^ Prverb)
-              (NOT *1 Prverb BARRIER CLB);
+              (NEGATE *1 Prverb BARRIER CLB);
 # olevat Antti seejuures üsna jämedalt väljendunud, kasutades koige 
 # ürgsemat _sorti_ soome-ugri sonavara
 
@@ -1457,7 +1493,7 @@ REMOVE (@PRD) (0 Adj)(*1 SbPr + Sg + Nom Barrier Kui OR Koma OR CLBC)
 REMOVE (@PRD) (0 Adj)(*1 SbPr + Pl + Nom BARRIER Kui OR Koma OR CLBC)
               (*-1 SbPr + Pl + Nom BARRIER CLBC);
 SELECT (A nom @PRD) (*-1 ("ole")BARRIER Subst + Nom OR CLB)
-              (NOT *1 Subst + Nom OR (@SUBJ inf) BARRIER CLB);
+              (NEGATE *1 Subst + Nom OR (@SUBJ inf) BARRIER CLB);
 
 #5) Substantiivse öeldistäite korral peab leiduma ka alus
 #  voi peab verb olema esimeses 2 pöördes
@@ -1466,31 +1502,30 @@ LIST Side = J;
 
 REMOVE (S nom @PRD) OR (P nom @PRD) (NOT *-1 SbPrNom)
               (NOT *1 SbPrNom)(NOT *-1 Vps12);
-REMOVE (S @PRD) OR (P @PRD) (NOT *-1 SbPrNom OR SbPr + Par BARRIER CLB)
-              (NOT *1 SbPrNom OR SbPr + Par BARRIER CLB)
-              (NOT *-1 Vps12 BARRIER CLB);
+REMOVE (S @PRD) OR (P @PRD) (NEGATE *0 SbPrNom OR SbPr + Par BARRIER CLB)
+                            (NEGATE *-1 Vps12 BARRIER CLB);
 REMOVE (S sg nom @PRD) OR (P sg nom @PRD) (1 Side)(2 SbPr + (sg nom))
-              (NOT *3 SbPrNom BARRIER CLB)
-              (NOT *-1 SbPrNom OR Vps12 BARRIER CLB);
+              (NEGATE *3 SbPrNom BARRIER CLB)
+              (NEGATE *-1 SbPrNom OR Vps12 BARRIER CLB);
 REMOVE (S sg nom @PRD) OR (P sg nom @PRD) (-1 Side)(-2 SbPr +  (sg nom))
-              (NOT *-3 SbPrNom OR Vps12 BARRIER CLB)
-              (NOT *1 SbPrNom BARRIER CLB);
+              (NEGATE *-3 SbPrNom OR Vps12 BARRIER CLB)
+              (NEGATE *1 SbPrNom BARRIER CLB);
 # Väljas oli ohtu voi öö.
 
 # 6) Unikaalsus
 # ei ole predikatiiv, kui osalauses juba leidub predikatiiv, mis ei ole
 # antud sonaga koordinatsioonis "ja" voi "ning" abil
 REMOVE (@PRD) (*1C (@PRD) BARRIER Sid|Kvm OR CLB)
-              (NOT *1 ("ole" inf) BARRIER CLB);
+              (NEGATE *1 ("ole" inf) BARRIER CLB);
 REMOVE (@PRD) (*-1C (@PRD) BARRIER Sid|Kvm OR CLB);
 # Vead: Must huumor see ainus õige ongi
 # Praegune on juba lõpp ise
 REMOVE (@PRD) (*1C (@ORD) BARRIER CLB LINK *-1 ("ole") BARRIER CLB)
-              (NOT *-1 ("ole") BARRIER CLB);
+              (NEGATE *-1 ("ole") BARRIER CLB);
 
 #7) Osastavas nimisonaline öeldistäide
 REMOVE (S part @PRD) OR (P part @PRD) (NOT -1 Adj OR (P dem))(NOT 0 ("miski" part));
-REMOVE (part @PRD) (*-1 (sg nom) BARRIER CLBC)(*1 (sg nom)  BARRIER CLBC);
+REMOVE (part @PRD) (*0 (sg nom) BARRIER CLBC);
 # see oli teatavat _liiki_ hüpnoos
 REMOVE (sg part @PRD) (*-1 ("ole") BARRIER CLB 
                                 LINK *1 (sg nom) BARRIER CLB LINK 1 Inf);
@@ -1501,7 +1536,7 @@ REMOVE (pl part @PRD) ;
 
 
 REMOVE (@PRD) (NOT 0 Inf)(*1 Inf ^ ("ole") BARRIER Kvm OR CLB)
-              (NOT *1 (@SUBJ inf) BARRIER CLB);
+              (NEGATE *1 (@SUBJ inf) BARRIER CLB);
 
 #8) Koordinatsioon
 SELECT (sg nom @PRD) (*-1 JaVoi BARRIER CLB LINK -1C (@PRD sg nom));
@@ -1521,8 +1556,8 @@ REMOVE (sg part @PRD) (1 Side)(2 (sg part))(NOT 2 (@PRD))(3 Kvm);
 # adjektiiv partitiivis ei ole predikatiiv, kui eelmine on "midagi"
 REMOVE (@PRD) (0 Adj)(0 Par)(-1 ("miski" part));
 # infinitiiv pole öeldistäide, kui osalauses ei leidu alust.
-REMOVE (inf @PRD) (NOT *-1 Subjekt BARRIER CLB)(NOT *1 Subjekt BARRIER CLB);
-SELECT ("väärt" @PRD) (NOT *1 SbPr BARRIER CLBC)(*-1 ("ole") BARRIER CLBC);
+REMOVE (inf @PRD) (NEGATE *0 Subjekt BARRIER CLB);
+SELECT ("väärt" @PRD) (NEGATE *1 SbPr BARRIER CLBC)(*-1 ("ole") BARRIER CLBC);
 # ta on seda väärt, et ... 
 REMOVE (A nom @PRD) (1 (A nom))(NOT 1 (@PRD));
 # Oli _külm_ selge aprillipäev
@@ -1534,11 +1569,11 @@ REMOVE (A nom @PRD) (1 (A nom))(NOT 1 (@PRD));
 REMOVE (partic past @PRD) (*-1C Objekt BARRIER CLB LINK *1 ("ole") BARRIER Verb OR CLB);
 # midagi sobivat oleksin endale ikka _leidnud_
 REMOVE (@PRD) (*-1C Objekt LINK 1 Partic)(NOT 0 Partic)
-              (NOT *-1 InfSupiin BARRIER CLBC)(NOT *1 InfSupiin BARRIER CLBC);
+              (NEGATE *0 InfSupiin BARRIER CLBC);
 # Viga: see ei olnud siiski ketserlus, mis oli kirjutatud tema näkku,
 # vaid lihtsalt intelligents
 REMOVE (@PRD) (*1C Objekt LINK 1 Partic)(NOT 0 Inf)
-              (NOT *-1 InfSupiin BARRIER CLBC)(NOT *1 InfSupiin BARRIER CLBC);
+              (NEGATE *-1 InfSupiin BARRIER CLBC);
 
 # VI ATRIBUUDIGRAMMATIKA
 
@@ -1573,6 +1608,7 @@ SELECT (sg gen @AN>) (*1 Subst + Sg + NiNaTaGa BARRIER NPpiir OR CLB);
 
 SELECT (pl nom @AN>) (1 Pl + Nom)(NOT 1 (P pers) OR (P dem) OR (P indef));
 SELECT (pl nom @AN>) (*1 Pl + Nom BARRIER NPpiir OR CLB)(NOT 0 (@PRD));
+SELECT (pl nom @AN>) (*1 Pl + Nom + Subst BARRIER NPpiir OR CLB)(*-1C Pl + Nom + Subst BARRIER CLB);
 SELECT (pl gen @AN>) (*1 Pl + Gen BARRIER NPpiir OR CLB);
 SELECT (pl part @AN>) (*1 Pl + Par BARRIER NPpiir OR CLB);
 SELECT (pl ill @AN>) OR (pl adit @AN>) (*1 Pl + IllAdt BARRIER NPpiir OR CLB);
@@ -1597,18 +1633,18 @@ SET FV = Oeldis;
 
 # 2) Lähiümbruses ei leidu nimisona, mida laiendada
 # Adjektiivne eestäiend
-REMOVE (nom @AN>) (NOT *1 Subst + Nom BARRIER CLB);
+REMOVE (nom @AN>) (NEGATE *1 Subst + Nom BARRIER CLB);
 # Viga: mis lähenes, _tohutu_ ja _hirmuäratav_, automaadi tärisedes, ...
-REMOVE (part @AN>) (NOT *1 Subst + Par BARRIER CLB);
+REMOVE (part @AN>) (NEGATE *1 Subst + Par BARRIER CLB);
 # Viga: Kuid ülempreester ei tahtnud loomulikult sellist _rahakat_ - ning
 # mis veelgi tähtam!- väga mõijuvõimast külalist minema lasta
-REMOVE (ill @AN>) OR (adit @AN>) (NOT *1 Subst + IllAdt BARRIER CLB);
-REMOVE (in @AN>) (NOT *1 Subst + In BARRIER CLB);
-REMOVE (el @AN>) (NOT *1 Subst + El BARRIER CLB);
-REMOVE (all @AN>) (NOT *1 Subst + All BARRIER CLB);
-REMOVE (ad @AN>) (NOT *1 Subst + Ad BARRIER CLB);
-REMOVE (abl @AN>) (NOT *1 Subst + Abl BARRIER CLB);
-REMOVE (tr @AN>) (NOT *1 Subst + Tr BARRIER CLB)(NOT -1 ("vähem") OR ("enam") OR ("rohkem")); #TP +-1
+REMOVE (ill @AN>) OR (adit @AN>) (NEGATE *1 Subst + IllAdt BARRIER CLB);
+REMOVE (in @AN>) (NEGATE *1 Subst + In BARRIER CLB);
+REMOVE (el @AN>) (NEGATE *1 Subst + El BARRIER CLB);
+REMOVE (all @AN>) (NEGATE *1 Subst + All BARRIER CLB);
+REMOVE (ad @AN>) (NEGATE *1 Subst + Ad BARRIER CLB);
+REMOVE (abl @AN>) (NEGATE *1 Subst + Abl BARRIER CLB);
+REMOVE (tr @AN>) (NEGATE *1 Subst + Tr BARRIER CLB)(NOT -1 ("vähem") OR ("enam") OR ("rohkem")); #TP +-1
 REMOVE (nom @AN>) (*1C FV BARRIER Subst + Nom OR CLB)(NOT 1 Nom) ;
 REMOVE (part @AN>) (*1C FV BARRIER Subst + Par OR CLB);
 REMOVE (ill @AN>) OR (adit @AN>) (*1C FV BARRIER Subst + IllAdt OR CLB);
@@ -1619,14 +1655,14 @@ REMOVE (ad @AN>) (*1C FV BARRIER Subst + Ad OR CLB);
 REMOVE (abl @AN>) (*1C FV BARRIER Subst + Abl OR CLB);
 REMOVE (tr @AN>) (*1C FV BARRIER Subst + Tr OR CLB);
 
-REMOVE (@AN>) (NOT 0 Nom)(NOT *1 Subst BARRIER CLB);
+REMOVE (@AN>) (NOT 0 Nom)(NEGATE *1 Subst BARRIER CLB);
 #Viga: Näiteks selle _paksu_ ja _blondi_, keda sa ...
 
 REMOVE (@AN>) (1 Võrdlus)(*1 Subst + Nom BARRIER CLB 
                              LINK NOT *1 Subst BARRIER CLB);
 # tumm kui lõpnud lest
 
-REMOVE (@AN>) (NOT 1 Adj)(NOT *1 Subst BARRIER CLB);
+REMOVE (@AN>) (NOT 1 Adj)(NEGATE *1 Subst BARRIER CLB);
 REMOVE (@AN>) (NOT 0 Nom)(*1 FV BARRIER Subst OR CLB);
 REMOVE (@AN>) (NOT 1 Adj)(*1 FV BARRIER Subst OR CLB);
 
@@ -1662,10 +1698,10 @@ SELECT (sg nom @AN>) (1 Koma)(2 ("kuid"))(3 Sg + Nom)(3C (@AN>));
 
 # Järgneb koma või sidesõna, kuid ei ole adjektiivset täiendit
 REMOVE (@AN>) (1 Koma + CLBC)(NOT 2 (@AN>) OR Adv OR Side)
-              (NOT *3 Partic BARRIER CLB);
+              (NEGATE *3 Partic BARRIER CLB);
 # mul on sellega kiire, neiuke
 REMOVE (@AN>) (1 JaVoi)(NOT 2 (@AN>) OR Adv)(1 CLBC)
-                   (NOT *3 Partic BARRIER CLB);
+                   (NEGATE *3 Partic BARRIER CLB);
 REMOVE (nom @AN>) (1 Koma)(1 CLBC)
                   (*2 Subst + Nom BARRIER (@AN>) OR CLB);
 #1.2. Järeltäiend
@@ -1679,20 +1715,20 @@ SELECT ("muu" sg part @<NN) (-1 ("miski"));
 
 # 2) Lähiümbruses ei leidu nimisona, mida laiendada
 
-REMOVE (nom @<AN) (NOT *-1 Subst + Nom BARRIER CLB);
-REMOVE (gen @<AN) (NOT *-1 Subst + Gen BARRIER CLB);
+REMOVE (nom @<AN) (NEGATE *-1 Subst + Nom BARRIER CLB);
+REMOVE (gen @<AN) (NEGATE *-1 Subst + Gen BARRIER CLB);
 # Viga: üle ühe mu elu võtmestseeni, mis sellest, et _tumma_ ja näiliselt
 # _kõrvalise_
-REMOVE (part @<AN) (NOT *-1 Subst + Par BARRIER CLB);
-REMOVE (ill @<AN) OR (adit @<AN) (NOT *-1 Subst + IllAdt BARRIER CLB);
-REMOVE (in @<AN) (NOT *-1 Subst + In BARRIER CLB);
-REMOVE (el @<AN) (NOT *-1 Subst + El BARRIER CLB);
+REMOVE (part @<AN) (NEGATE *-1 Subst + Par BARRIER CLB);
+REMOVE (ill @<AN) OR (adit @<AN) (NEGATE *-1 Subst + IllAdt BARRIER CLB);
+REMOVE (in @<AN) (NEGATE *-1 Subst + In BARRIER CLB);
+REMOVE (el @<AN) (NEGATE *-1 Subst + El BARRIER CLB);
 # Vead: erinevus kõigist teistest selles piirkonnas _kõneldavaist_.
 # ohverdamisviisidest, vanadest, mil ..., ja _uutest_, mil ...
-REMOVE (all @<AN) (NOT *-1 Subst + All BARRIER CLB);
-REMOVE (ad @<AN) (NOT *-1 Subst + Ad BARRIER CLB);
-REMOVE (abl @<AN) (NOT *-1 Subst + Abl BARRIER CLB);
-REMOVE (tr @<AN) (NOT *-1 Subst + Tr BARRIER CLB);
+REMOVE (all @<AN) (NEGATE *-1 Subst + All BARRIER CLB);
+REMOVE (ad @<AN) (NEGATE *-1 Subst + Ad BARRIER CLB);
+REMOVE (abl @<AN) (NEGATE *-1 Subst + Abl BARRIER CLB);
+REMOVE (tr @<AN) (NEGATE *-1 Subst + Tr BARRIER CLB);
 REMOVE (nom @<AN) (*-1 FV BARRIER Subst + Nom OR CLB);
 REMOVE (gen @<AN) (*-1 FV BARRIER Subst + Gen OR CLB);
 REMOVE (part @<AN) (*-1 FV BARRIER Subst + Par OR CLB);
@@ -1721,7 +1757,7 @@ REMOVE (@<AN) (NOT 0 Gen)(*-1 Subst BARRIER Koma OR Koolon OR CLB);
 # 2.1. Eestäiend
 
 SELECT ("ise" @NN>) (0 Nom)(1 (P pers));
-REMOVE ("ise" @NN>) (NOT 0 Gen)(NOT *1 FinV OR (P pers) BARRIER CLB);
+REMOVE ("ise" @NN>) (NOT 0 Gen)(NEGATE *1 FinV OR (P pers) BARRIER CLB);
 
 # 2.2. Järeltäiend
 # Asesõnad (enamus on üleval pool, et ei segaks aluse-sihitise reegleid)
@@ -1743,10 +1779,10 @@ SELECT ("ise" nom @<NN) (*-1 (V ps1 sg) BARRIER CLB);
 SELECT ("ise" nom @<NN) (*-1 (V ps2 sg) BARRIER CLB);
 SELECT ("ise" nom @<NN) (*-1 (V ps1 pl) BARRIER CLB);
 SELECT ("ise" nom @<NN) (*-1 (V ps2 pl) BARRIER CLB);
-REMOVE ("ise" el @<NN) (NOT *-1 El BARRIER CLB);
-REMOVE ("ise" all @<NN) (NOT *-1 All BARRIER CLB);
-REMOVE ("ise" ad @<NN) (NOT *-1 Ad BARRIER CLB)  ;
-REMOVE ("ise" @<NN) (0 NiNaTaGa)(NOT *-1 Gen BARRIER CLB) ;
+REMOVE ("ise" el @<NN) (NEGATE *-1 El BARRIER CLB);
+REMOVE ("ise" all @<NN) (NEGATE *-1 All BARRIER CLB);
+REMOVE ("ise" ad @<NN) (NEGATE *-1 Ad BARRIER CLB)  ;
+REMOVE ("ise" @<NN) (0 NiNaTaGa)(NEGATE *-1 Gen BARRIER CLB) ;
 SELECT (P dem sg part @<NN) (*-1 ("miski") BARRIER Kvm OR FV OR CLB);
 
 # Konkreetsed asesonad järeltäiendina
@@ -1806,18 +1842,21 @@ SELECT (pl gen @NN>) (0 ArvKv)
 SELECT ("üks" N @NN>) (*1 Subst BARRIER CLB)
               (*1 NPpiir BARRIER El OR CLB)(NOT -1 Arv);
 SELECT ("üks" N @NN>) (*1 Subst BARRIER CLB)
-              (NOT *1 El BARRIER CLB)(NOT -1 Arv);
+              (NEGATE *1 El BARRIER CLB)(NOT -1 Arv);
 
 SELECT ("kell" @NN>) (1 Arv);
 REMOVE ("kes" @NN>) (NOT 0 Gen)(-1 Koma);
 
 # 2) Pole, mida täiendada
 
+REMOVE (@NN>) OR (@DN>) (NOT 0 Pron)
+			(NEGATE *1 SbPr OR Arv OR (Y nominal) BARRIER NPpiir OR FV OR CLBC);
 
-REMOVE (@NN>) OR (@DN>) (NOT 0 Pron)(NOT 1 Sid|Kvm)
-			(NEGATE *1 SbPr OR Arv BARRIER NPpiir OR FV OR CLBC); # TP (NOT 1 Sid|Kvm) 9676
+#REMOVE (@NN>) OR (@DN>) (NOT 0 Pron)(NOT 1 Sid|Kvm)
+#			(NEGATE *1 SbPr OR Arv OR (Y nominal) BARRIER NPpiir OR FV OR CLBC); # TP (NOT 1 Sid|Kvm) 9676
+
 REMOVE (@NN>) OR (@DN>) (0 (P pers))
-			(NOT *1 SbPr OR Arv BARRIER NPpiir OR FV OR CLBC);
+			(NEGATE *1 SbPr OR Arv BARRIER NPpiir OR FV OR CLBC);
 #REMOVE (@NN>) (NOT *1 HeadPPQ)(*-1C NPpiir *R+1)(NOT *R+1 SbPrN) **CLBC)
 # Viga: palun see suurem sealt
 
@@ -1832,21 +1871,21 @@ REMOVE (@NN>) (*1C Ger BARRIER SbPr OR Arv OR CLB);
 LIST Võrre = comp super;
 
 REMOVE (@NN>) (NOT 0 Pron)(*1 Võrdlus BARRIER Subst OR CLB LINK NOT -1 Võrre)
-              (NOT *-1 Nii BARRIER CLB);
+              (NEGATE *-1 Nii BARRIER CLB);
 REMOVE (P @NN>) (*1 Võrdlus BARRIER Subst OR Pron OR CLB 
                               LINK NOT -1 Võrre)
-              (NOT *-1 Nii BARRIER CLB);
+              (NEGATE *-1 Nii BARRIER CLB);
 
 #Kvantorifraasis
 REMOVE (@NN>) (1C JärelKv)(2C FV)(NOT *-1 Subst BARRIER CLB);
-REMOVE (@NN>) (1C JärelKv)(NOT *2 SbPr BARRIER CLB)
-              (NOT *-1 KvAdv OR NimKv OR ArvKv  BARRIER CLBC);
+REMOVE (@NN>) (1C JärelKv)(NEGATE *2 SbPr BARRIER CLB)
+              (NEGATE *-1 KvAdv OR NimKv OR ArvKv  BARRIER CLBC);
 
 # 3) Partitsiipide ees olevad sõnad
 LIST Sise = in ad el abl ill adit all;
 REMOVE (@NN>) (0 Sise)(1 Partic)(NOT 2 Sise);
-REMOVE (all @NN>) (1 Partic)(NOT *1 All BARRIER CLB);
-REMOVE (el @NN>) (1 Partic)(NOT *1 El BARRIER CLB);
+REMOVE (all @NN>) (1 Partic)(NEGATE *1 All BARRIER CLB);
+REMOVE (el @NN>) (1 Partic)(NEGATE *1 El BARRIER CLB);
 
 # 4) Käänded
 
@@ -1862,7 +1901,7 @@ REMOVE (part @NN>) (NOT 0 Parameeter)(NOT 1 Par);
 # Seesütlev kääne ja kohakaassona ei ole seotud
 # Ma seisin esikus peegli ees
 REMOVE (in @NN>) (1C (@<P))(2 SiseKaas)
-	      (NOT *3 SbPr BARRIER NPpiir OR CLB);
+	      (NEGATE *3 SbPr BARRIER NPpiir OR CLB);
 REMOVE (@NN>) (0 Sise)(1 (A partic past))(NOT 2 Sise);
 
 REMOVE (@NN>) (0 Sise)(1 Adj)(NOT 0 Pron);
@@ -1872,23 +1911,25 @@ REMOVE (@NN>) (0 Sise)(1 (P dem))(NOT 0 Pron);
 
 # Allatiiv
 REMOVE (S all @NN>) (NOT 1 Deverbaal);
-REMOVE (P all @NN>) (NOT *1 All BARRIER CLB)(NOT 1 ("lisa" S));
+REMOVE (P all @NN>) (NEGATE *1 All BARRIER CLB)(NOT 1 ("lisa" S));
 
+LIST AdVajalik = "osaleja" "osale=mine" "võistleja" "võistle=mine"; 
+# tegelikult kõikvõimalikud tegijad ja mined;
 # Adessiiv
-REMOVE (S ad @NN>) ;
-REMOVE (P ad @NN>) (NOT *1 Ad BARRIER CLB);
+REMOVE (S ad @NN>) (NOT 1 AdVajalik);
+REMOVE (P ad @NN>) (NEGATE *1 Ad BARRIER CLB);
 
 # Ablatiiv
 REMOVE (S abl @NN>) ;
-REMOVE (P abl @NN>) (NOT *1 Abl BARRIER CLB);
+REMOVE (P abl @NN>) (NEGATE *1 Abl BARRIER CLB);
 
 # Inessiiv
-REMOVE (P in @NN>) (NOT *1 In BARRIER CLB);
+REMOVE (P in @NN>) (NEGATE *1 In BARRIER CLB);
 
 # Translatiiv
 # Nimisona translatiivis ei saa saa olla eestäiendiks
 REMOVE (S tr @NN>) (NOT 1 Deverbaal);
-REMOVE (P tr @NN>) (NOT *1 Tr BARRIER CLB);
+REMOVE (P tr @NN>) (NEGATE *1 Tr BARRIER CLB);
 
 #Essiiv
 REMOVE (S es @NN>) OR (P es @NN>);
@@ -1914,15 +1955,15 @@ REMOVE (@NN>) (1 JaVoiK)(*2 FV BARRIER Eestäiend OR CLB);
 #3.2 Järeltäiend või lisand
 
 #1) Eespool pole, mida täiendada
-REMOVE (@<NN)(NOT 0 Ise OR Koik)(NOT *-1 SbPrN BARRIER CLB);
+REMOVE (@<NN)(NOT 0 Ise OR Koik)(NEGATE *-1 SbPrN BARRIER CLB);
 # Viga tekkis loetelus, kus ja ees oli koma 
 REMOVE (@<NN)(NOT 0 Ise OR Koik)(*-1 FV BARRIER SbPrN OR CLB);
 # Viga: Mida ta teeb, range koolidirektor, kohalik vaimuhiiglane, ...
 REMOVE (@<NN)(NOT 0 Ise OR Koik)(*-1 Adv BARRIER CLB OR Subst LINK -1 Adv);
 #LIST NotEestäiend = @<NN @SUBJ @OBJ @PRD (S @ADVL) (N card @ADVL) (P @ADVL) @<P;
-REMOVE (@<NN)(NOT *-1 NotEestäiend BARRIER FV OR CLB)
+REMOVE (@<NN)(NEGATE *-1 NotEestäiend BARRIER FV OR CLB)
              (NOT 0 Ise OR Koik)
-             (NOT *1 Subst BARRIER CLB);
+             (NEGATE *1 Subst BARRIER CLB);
 # Eespool on ainult kaassonafraas
 # Nt lamas nüüd kabeturniiri asemel haiglas.
 REMOVE (@<NN)(*-1 (post) BARRIER SbPrN OR CLB LINK *-1C (@P>) BARRIER CLB 
@@ -1941,9 +1982,9 @@ SELECT (pl el @<NN) (*-1 ArvKv BARRIER FV OR Subjekt OR CLB LINK NOT 0 (el));
 REMOVE (sg nom @<NN) (-1 Koma)(-2 Sg + Nom)(NOT -2 (@<NN))(NOT 1 Koma);
 REMOVE (pl nom @<NN) (-1 Koma)(-2 Pl + Nom)(NOT -2 (@<NN))(NOT 1 Koma);
 REMOVE (sg gen @<NN) (-1 Koma)(-2 Sg + Gen)(NOT -2 (@<NN))
-       (NOT *1 Subst BARRIER CLB);
+       (NEGATE *1 Subst BARRIER CLB);
 REMOVE (pl gen @<NN) (-1 Koma)(-2 Pl + Gen)(NOT -2 (@<NN))
-       (NOT *1 Subst BARRIER CLB);
+       (NEGATE *1 Subst BARRIER CLB);
 REMOVE (sg gen @<NN) (-1 Koma)(-2 Sg + Gen)(NOT -2 (@<NN))(1 JaVoi ^ CLB);
 REMOVE (pl gen @<NN) (-1 Koma)(-2 Pl + Gen)(NOT -2 (@<NN))(1 JaVoi ^ CLB);
 
@@ -1997,30 +2038,30 @@ LIST NimEeslaiend = @NN> @P>;
 
 SELECT (nom @<NN) (*-1 Kui BARRIER NotEestäiend OR Võrre OR CLB 
                        LINK -1 Nom + SbPr)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 # väldib: oli püsivam vihaobjekt kui Euraasia
 SELECT (gen @<NN) (*-1 Kui BARRIER NotEestäiend OR Võrre OR CLB LINK -1 Gen)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 
 SELECT (part @<NN) (*-1 Kui BARRIER NotEestäiend OR Võrre OR CLB LINK -1 Par)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 
 SELECT (adit @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 IllAdt)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (ill @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 IllAdt)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (in @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 In)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (el @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 El)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (all @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 All)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (ad @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 Ad)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (abl @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 Abl)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 SELECT (tr @<NN) (*-1 Kui BARRIER FV OR Subjekt OR Võrre OR CLB LINK -1 Tr)
-                  (NOT *-1 Nii BARRIER CLB);
+                  (NEGATE *-1 Nii BARRIER CLB);
 # sinule kui keiser Julianuse eluloo kirjutajale
 
 #5) Veidi karmimad reeglid vasaku konkteksti kohta
@@ -2035,11 +2076,12 @@ REMOVE (@<NN) (-1 Partic)(-2C Määrus)
 REMOVE (@<NN) (*-1 SupInfGer BARRIER Subst OR CLB);
 # kipun ülehindama mulle eraldatud _minutite_ kestust
 
+REMOVE (@<NN) (NEGATE *-1 HeadPPQ BARRIER CLB)
+              (NEGATE *-1 NimEeslaiend BARRIER CLB)(NOT 0 Ise);
 
-
-REMOVE (@<NN) (NOT *-1 HeadPPQ BARRIER CLB)
-              (NOT *-1 NimEeslaiend BARRIER CLB)(NOT 0 Ise);
-
+REMOVE (@<NN) (-1C (@NN>))(NEGATE *-2 Subst BARRIER CLB);              
+              
+              
 LIST PersPron = (P pers);
 # Isikulist asesona ei saa täiendada, kui just ühildumist ei ole
 
@@ -2103,28 +2145,28 @@ SELECT (sg nom @<NN) (*-1 Sid|Kvm BARRIER NotEestäiend OR CLB
 REMOVE (nom @<NN) (NOT 0 Ise OR Nimi)(*-1 FV BARRIER Subst + Nom OR OPar OR CLB);
 # Viga: mütsatades vastu uuskeele sõna kaksisoism
 
-REMOVE (nom @<NN) (NOT 0 Ise OR Nimi)(NOT *-1 OPar OR SbPrNom BARRIER CLB);
+REMOVE (nom @<NN) (NOT 0 Ise OR Nimi)(NEGATE *-1 OPar OR SbPrNom BARRIER CLB);
 #Peab olema põhisõnast komadega vms eraldatud
 #REMOVE (nom @<NN) (NOT 0 Nimi OR Ise OR Cap)(*-1 Verb *R+1)(NOT *R+1 Kvm) **CLB)
 # Vead: näidates ainsat sõna ingsots
 # millel oli kiri Võidu sigaretid
 #Omastav
-REMOVE (gen @<NN) (NOT *-1 Subst + Gen BARRIER FV OR CLB)
-                  (NOT *1 Subst + Kom BARRIER FV OR CLB);
+REMOVE (gen @<NN) (NEGATE *-1 Subst + Gen BARRIER FV OR CLB)
+                  (NEGATE *1 Subst + Kom BARRIER FV OR CLB);
 REMOVE (gen @<NN) (1 Subst);
-REMOVE (gen @<NN) (NOT *-1 Kvm BARRIER CLB)(NOT *1 Kom BARRIER CLB);
-REMOVE (gen @<NN) (NOT *-1 Subst + Gen BARRIER FV OR CLB)
+REMOVE (gen @<NN) (NEGATE *0 Kvm BARRIER CLB);
+REMOVE (gen @<NN) (NEGATE *-1 Subst + Gen BARRIER FV OR CLB)
                   (*1 Subst + Kom BARRIER FV OR CLB OR JaVoiK);
 
 #Peab olema põhisõnast komadega vms eraldatud
-REMOVE (gen @<NN) (*-1 Verb BARRIER Kvm OR CLB)(NOT *1 Subst + Kom BARRIER CLB);
+REMOVE (gen @<NN) (*-1 Verb BARRIER Kvm OR CLB)(NEGATE *1 Subst + Kom BARRIER CLB);
 # Osastav
-REMOVE (sg part @<NN) (NOT *-1 Subst + Par BARRIER FV OR CLB);
-REMOVE (pl part @<NN) (NOT *-1 Subst + Par BARRIER FV OR CLB)(NOT 1 Koma);
+REMOVE (sg part @<NN) (NEGATE *-1 Subst + Par BARRIER FV OR CLB);
+REMOVE (pl part @<NN) (NEGATE *-1 Subst + Par BARRIER FV OR CLB)(NOT 1 Koma);
 # Viga siis, kui loetelu vahel kõrvallause
 # Erand: Epp, meie parimaid tantsijaid, ...
 #Peab olema põhisõnast komadega vms eraldatud
-REMOVE (part @<NN) (NOT *-1 Kvm BARRIER FV OR CLB);
+REMOVE (part @<NN) (NEGATE *-1 Kvm BARRIER FV OR CLB);
 
 # 7) Käänded
 # Järellisand peab olema komade vahel
@@ -2133,6 +2175,9 @@ REMOVE (nom @<NN) (NOT 0 Arv OR NimKv)(-1 Koma)(NOT 1 JaVoiK)(NOT 1 Kvm);
 REMOVE (tr @<NN) (NOT -1 Subst);
 REMOVE (kom @<NN)(-1 All);
 # riputas kaladele peoga soola
+
+
+
 
 # 4. Määrsõnad
 # 4.1. Eestäiend
@@ -2167,6 +2212,7 @@ LIST YlesAlla = "üles" "alla" "ette" ("välja" D) "sisse" "mööda";
 LIST Kaasa = "kaasa" "koos" "ühes";
 # kes tahes, mis tahes
 SELECT ("tahes" @<DN) (-1 Pron);
+SETPARENT ("tahes" @<DN) TO (-1 Pron);
 REMOVE (@<DN) (NOT -1 SbPr);
 REMOVE (@<DN)(0 YlesAlla)(-1 El);
 REMOVE (@<DN)(0 Kaasa)(-1 Kom);
@@ -2177,7 +2223,7 @@ REMOVE (@<DN)(-1 Pron)(NOT -1 Koik)(NOT 0 ("tahes"));
 # kaassonad pole eestäiendid kui tagapool ei leidu nimisonu:
 REMOVE (pre @KN>) (*1C (@<P) BARRIER CLB OR FV 
                        LINK NOT *1 Subst BARRIER CLB OR FV);
-REMOVE (post @KN>) (NOT *1 Subst BARRIER CLB OR FV);
+REMOVE (post @KN>) (NEGATE *1 Subst BARRIER CLB OR FV);
 REMOVE (@KN>) (*1C (@<P) BARRIER Subst OR CLB LINK *1C JärelKv BARRIER Subst OR CLB 
                          LINK NOT *1 Subst BARRIER CLB);
 REMOVE (post @KN>) (*1 Pron BARRIER Subst OR CLB);
@@ -2191,29 +2237,36 @@ REMOVE (pre @KN>) (*1 (@<P) BARRIER Subst OR CLB LINK *1 Adv BARRIER Subst OR CL
 #ükskord jõin tema pool teed.
 
 #5.2. Järeltäiend
+SELECT ("jooksul" @<KN) (*-1 ("kord" S) BARRIER CLB OR FinV);
+SETPARENT ("jooksul" @<KN) TO (*-1 ("kord" S) BARRIER CLB OR FinV);
 
-REMOVE (pre @<KN) (NOT *-1 Subst BARRIER CLB OR FV);
-REMOVE (post @<KN) (*-1C (@P>) BARRIER CLB LINK NOT *-1 Subst BARRIER CLB OR FV);
-REMOVE (post @<KN) (*-1C (@P>) BARRIER CLB LINK NOT *-1 Subst BARRIER CLB OR FV);
-REMOVE (@<KN) (NOT *-1 NotEestäiend BARRIER CLB OR FV);
+REMOVE (pre @<KN) (NEGATE *-1 Subst BARRIER CLB OR FV);
+REMOVE (post @<KN) (*-1C (@P>) BARRIER CLB LINK NEGATE *-1 Subst BARRIER CLB OR FV);
+REMOVE (@<KN) (NEGATE *-1 NotEestäiend BARRIER CLB OR FV);
 
 # Sisekaassõnad ei täienda tavaliselt sisekohakäändeid
 # Ma seisin esikus peegli ees
-REMOVE (@<KN) (0 SiseKaas)(-1C (@P>))(-2 In)(NOT *-3 SbPr BARRIER NPpiir OR CLB);
+REMOVE (@<KN) (0 SiseKaas)(-1C (@P>))(-2 In)(NEGATE *-3 SbPr BARRIER NPpiir OR CLB);
 
 #6. Infinitiivid
 #6.1. Eestäiend
-REMOVE (@INFN>)(NOT *1 Subst BARRIER CLB OR FV OR Pron OR Adv);
+REMOVE (@INFN>)(NEGATE *1 Subst BARRIER CLB OR FV OR Pron OR Adv);
 # Deverbaalsubstantiivi laiendina talitleb supiinitarind adverbiaalatribuudina.
-REMOVE (sup @INFN>) (NOT *1 Deverbaal BARRIER CLB OR FV OR Pron);
+REMOVE (sup @INFN>) (NEGATE *1 Deverbaal BARRIER CLB OR FV OR Pron);
 
 #6.2. Järeltäiend
 # Eespool on ainult eestäiendid
-REMOVE (@<INFN)(NOT *-1 NotEestäiend OR Subst BARRIER FV OR CLB);
+REMOVE (@<INFN)(NEGATE *-1 NotEestäiend OR Subst BARRIER FV OR CLB);
 
 # Supiinitarind paikneb harilikult oma pohisona ees, üksikjuhtudel
 # voib see asetseda ka viimase järel.
-REMOVE (sup @<INFN) (NOT *-1 Deverbaal BARRIER CLBC OR NPpiir);
+REMOVE (sup @<INFN) (NEGATE *-1 Deverbaal BARRIER CLBC OR NPpiir);
+
+LIST NimkoosDa = "soov" "võimalus" "tahtmine" "mõte" "unistus" "katse" "proov" "eelistus" "himu" "häbi" "igatsus" "iha" "ihalus" "jõud" "julgus" "kartus" "kavatsus" "kava" "keeld" "kõhklus" "käsk" "lootus" "luba"
+                 "oskus" "otsus" "palve" "hirm" "plaan" "püüe" "risk" "soovitus"  "tahe" "takistus" "tõke" "tava" "komme" "tõotus" "vanne" "usk" "võimalus" "võime" "ähvardus"  "ärgitus" "üritus" ;
+
+SELECT (inf @<INFN) (-1 NimkoosDa);
+SETPARENT (inf @<INFN) TO (-1 NimkoosDa);
 
 #VII ADVERBIAALIGRAMMATIKA
 
@@ -2256,13 +2309,17 @@ SELECT (gen @ADVL) (1 Adjühik);
 REMOVE (nom @ADVL)(0 SbPr)(NOT 0 Aeg OR Arvsõna OR NimKv OR Lauselaiend)
              (NOT 1 Hiljem)
              (NOT -1 Iga OR Järgarv)
-             (NOT *-1 Terve OR Võrdlus BARRIER CLB OR FV);
+             (NEGATE *-1 Terve OR Võrdlus BARRIER CLB OR FV);
 #Vead: 
 # Ta vottis istet samas reas kus _Winstongi_
 # päevadel, mis ma abahakiiride juures oline
 # Mis see meie asi on (2x)
 # läheme jala ja kõik
 # kõiki oleks tulnud kõnetada seltsimees
+
+
+SELECT (S nom @ADVL) (1 (Fst))(-1 Võrdlus);
+
 
 REMOVE (nom @ADVL)(0 SbPr)(NOT 0 Aeg OR Arvsõna OR NimKv OR Lauselaiend)
              (NOT 1 Hiljem)
@@ -2281,13 +2338,13 @@ REMOVE (nom @ADVL)(0 SbPr)(NOT 0 Aeg OR Arvsõna OR NimKv OR Lauselaiend)
 
 REMOVE (part @ADVL)(NOT -1 Järgarv)(NOT 0 Tervitus OR NimKv OR ("kord") OR Aeg)
               (NOT 0 Arvsõna OR Viisimäärus OR KedaMida OR ("see"))
-              (NOT 1 Võrre)(NOT *-1 Võrdlus BARRIER CLBC);
+              (NOT 1 Võrre)(NEGATE *-1 Võrdlus BARRIER CLBC);
 REMOVE (part @ADVL)(NOT -1 Järgarv)(NOT 0 Tervitus OR NimKv OR ("kord") OR Aeg)
               (NOT 0 Arvsõna OR Viisimäärus OR KedaMida OR ("see"))
               (NOT 1 Võrre)(*-1 Võrdlus + CLB BARRIER CLB);
 
 REMOVE ("see" part @ADVL)(NOT 1 KompKvAdv)(NOT 1 Võrre)(NOT 1 ("et"))
-              (NOT *-1 Võrdlus BARRIER CLB);
+              (NEGATE *-1 Võrdlus BARRIER CLB);
 REMOVE (part @ADVL)(NOT -1 Järgarv)(NOT 0 Tervitus OR NimKv OR ("kord") OR Aeg)
               (NOT 0 Arvsõna OR Viisimäärus OR KedaMida OR ("see"))
               (NOT 1 Võrre)(*-1 Võrdlus BARRIER CLB LINK 1 SbPrNom);
@@ -2307,19 +2364,23 @@ LIST VatAdvVerb = "leid" "loot" "ütle" "aima" "arva" "avasta" "eelda"
                  "tead" "tund" "tunnista" "väit" "usku";
 
 REMOVE (S prop gen @ADVL) (NOT 1 Tud OR Ger OR Inf OR Tav)
-               (NOT *-1 Võrdlus BARRIER CLB);
+               (NEGATE *-1 Võrdlus BARRIER CLB);
 REMOVE (gen @ADVL)(NOT -1 Järgarv)(NOT 0 NimKv OR ("kord") OR Aeg OR Arvsõna)
-              (NOT *1 NiNaTaGa BARRIER NPpiir OR CLB OR Side)
-              (NOT 1 NudTudDes OR Inf OR Tav)(NOT *-1 Võrdlus BARRIER CLB);
+              (NEGATE *1 NiNaTaGa BARRIER NPpiir OR CLB)
+              (NOT 1 NudTudDes OR Inf OR Tav)(NEGATE *-1 Võrdlus BARRIER CLB);
+REMOVE (gen @ADVL)(NOT -1 Järgarv)(NOT 0 NimKv OR ("kord") OR Aeg OR Arvsõna)
+              (1 NiNaTaGa)(NEGATE *-1 Võrdlus BARRIER CLB);
 
+              
+              
 # Mitmuses omastavas käändes nimisona pole määrus, kui ei järgne pikune-tüüpi omadussona
 REMOVE (pl gen @ADVL)(NOT 1 Sid|Kvm)(NOT 1 NudTudDes)(NOT 1 Inf)(NOT 1 Tav);
-REMOVE (pl gen @ADVL)(1 Sid|Kvm)(NOT *1 NiNaTaGa BARRIER CLB);
+REMOVE (pl gen @ADVL)(1 Sid|Kvm)(NEGATE *1 NiNaTaGa BARRIER CLB);
 
 # Nimisonalised kvantorid ei ole määrused:
 REMOVE (nom @ADVL)(0 NimKv)(NOT 0 Aeg)(NOT 1 Hiljem)
                 (NOT -1 Iga)(NOT -1 Järgarv)
-                (NOT *-1 Võrdlus BARRIER CLBC)(NOT *1 JärelKv BARRIER CLBC);
+                (NEGATE *-1 Võrdlus BARRIER CLBC)(NEGATE *1 JärelKv BARRIER CLBC);
 
 # Üksikud juhud:
 REMOVE ("miski" part @ADVL);
@@ -2345,7 +2406,7 @@ SELECT (term @ADVL) (1 Täis);
 SELECT (@ADVL) (0 Adj + NiNaTaGa);
 SELECT (A gen @ADVL) (1 JaVoi)(2 Adj + NiNaTaGa);
 # omadussona omastavas pole määrus, kui paremal ei ole neljas viimases käändes omadussona.
-REMOVE (A gen @ADVL) (NOT *1 Adj + NiNaTaGa);
+REMOVE (A gen @ADVL) (NEGATE *1 Adj + NiNaTaGa);
 # adverb enne partitsiipi on määrus
 SELECT (D @ADVL) (1 Partic);
 SELECT (digit @ADVL) (-1 OPar)(1 CPar);
@@ -2359,9 +2420,9 @@ AFTER-SECTIONS
 
 # SUBJEKTI HEURISTILISED REEGLID 
 # Need reeglid on kas nii uued, et on korralikult testimata, voi on nende tekitatud vigade hulk suur.
-REMOVE (inf @SUBJ) (NOT *-1 TeisedDaInfv OR Emotsioonv OR Sobivusv 
+REMOVE (inf @SUBJ) (NEGATE *-1 TeisedDaInfv OR Emotsioonv OR Sobivusv 
                         OR Vajadusv OR Suutelisusv BARRIER CLBC)
-		   (NOT *1 TeisedDaInfv OR Emotsioonv OR Sobivusv 
+		   (NEGATE *1 TeisedDaInfv OR Emotsioonv OR Sobivusv 
                         OR Vajadusv OR Suutelisusv BARRIER CLBC);
 
 # Subjekt eelneb predikatiivile
@@ -2370,8 +2431,8 @@ SELECT (S @SUBJ) (NOT 0 (@OBJ) OR (@ADVL)) (1 FinV)
 
 # Nimetavas käändes sõnale järgneb kohe järgmine osalause
 # Nt. Mees, kes ....
-SELECT (nom @SUBJ) (NOT 0 Arv)(1 Koma OR OPar)(NOT *-1 Verb BARRIER CLB)
-               (NOT *1 SbPr OR Verb BARRIER CLB)(NOT *-1 (Dsh)); # TP +Dsh
+SELECT (nom @SUBJ) (NOT 0 Arv)(1 Koma OR OPar)(NEGATE *-1 Verb BARRIER CLB)
+               (NEGATE *1 SbPr OR Verb BARRIER CLB)(NOT *-1 (Dsh)); # TP +Dsh
 
 # Veidi laiendatud unikaalsuse printsiip, mis ei arvesta sidesõnade ja
 # kvm-dega, sest leitud alus ja sõna on erinevates käänetes
@@ -2386,66 +2447,60 @@ REMOVE (@SUBJ) (NOT 0 Nom)(*1C Subjekt + Nom)
 #rohkem mitmuse nominatiive osalauses pole
 #vigu tekib poolikutes osalausetes. 
 SELECT (pl nom @SUBJ) (1 (V ps3 pl)) (NOT *2 SbPr + Pl + Nom)
-                  (NOT *-1 Impl BARRIER CLB)
-                  (NOT *1 Impl BARRIER CLB)
-                  (NOT *-1 Subjekt BARRIER CLB);
+                  (NEGATE *0 Impl BARRIER CLB)
+                  (NEGATE *-1 Subjekt BARRIER CLB);
 # Tüüplause Ad Intr&YVVerb SUBJ
 SELECT (@SUBJ) (NOT 0 Inf)
                   (*-1 In OR Ad BARRIER CLB 
-                       LINK NOT *-1 SbPr BARRIER CLB)
+                       LINK NEGATE *-1 SbPr BARRIER CLB)
                   (*-1 In OR Ad BARRIER Subjekt OR CLB LINK 1 Intr&YV)
-                  (NOT *1 Subjekt BARRIER CLB)
-                  (NOT *-1 Inf OR Tud BARRIER CLB)
-                  (NOT *1 Inf OR Tud BARRIER CLB);
+                  (NEGATE *1 Subjekt BARRIER CLB)
+                  (NEGATE *-1 Inf OR Tud BARRIER CLB)
+                  (NEGATE *1 Inf OR Tud BARRIER CLB);
 SELECT (@SUBJ) (NOT 0 Inf)(*-1 In OR Ad BARRIER CLB 
-                               LINK NOT *-1 SbPr BARRIER CLB)
+                               LINK NEGATE *-1 SbPr BARRIER CLB)
                   (*-1 In OR Ad BARRIER SbPrNom OR CLB LINK 1 Intr&YV)
-                  (NOT *1 SbPrNom BARRIER CLB)
-                  (NOT *-1 Tud BARRIER CLB)
-                  (NOT *1  Tud BARRIER CLB)(1C (@<INFN));
+                  (NEGATE *1 SbPrNom BARRIER CLB)
+                  (NEGATE *-1 Tud BARRIER CLB)
+                  (NEGATE *1  Tud BARRIER CLB)(1C (@<INFN));
 
 SELECT (@SUBJ) (*-1 In OR Ad BARRIER CLB LINK NOT *-1 SbPr BARRIER CLB)
                (*-1 In OR Ad BARRIER CLB OR SbPrNom LINK 1 Intr&YV)
-               (NOT *-1 Tud OR Imper BARRIER CLB)
-               (NOT *1  Tud OR Imper BARRIER CLB)
+               (NEGATE *-1 Tud OR Imper BARRIER CLB)
+               (NEGATE *1  Tud OR Imper BARRIER CLB)
                (*1C Objekt BARRIER CLB LINK *1 Inf BARRIER CLB);
 
-SELECT (nom @SUBJ) (NOT 0 Arv)(NOT *-1 Koma)(NOT *1 Koma)
+SELECT (nom @SUBJ) (NOT 0 Arv)(NOT *0 Koma)
                (NOT *-1 Subjekt)(NOT *1 Subjekt)
-               (NOT 1 Inf)(NOT *-1 Impl)(NOT *1 Impl)
-               (NOT *-1 Imper)(NOT *1 Imper)(NOT *-1 Vps12)(NOT *1 Vps12);
+               (NOT 1 Inf)(NOT *0 Impl)
+               (NOT *0 Imper)(NOT *0 Vps12);
 
 SELECT (nom @SUBJ) (NOT 0 Määrus)
-               (NOT *-1 Koma BARRIER CLB)
+               (NEGATE *-1 Koma BARRIER CLB)
                (*1 Koma BARRIER CLB LINK *1 SbPr BARRIER CLB)
-               (NOT *-1 Subjekt BARRIER CLB)(NOT *1 Subjekt BARRIER CLB)
+               (NEGATE *0 Subjekt BARRIER CLB)
                (*1 CLB ^ Ja)(*-1 FinV BARRIER CLB)(NOT 1 Inf)
-               (NOT *-1 Impl BARRIER CLB)(NOT *1 Impl BARRIER CLB)
-               (NOT *-1 Imper BARRIER CLB)(NOT *1 Imper BARRIER CLB)
-               (NOT *-1 Vps12 BARRIER CLB)(NOT *1 Vps12 BARRIER CLB)
+               (NEGATE *0 Impl BARRIER CLB)
+               (NEGATE *0 Imper BARRIER CLB)
+               (NEGATE *0 Vps12 BARRIER CLB)
                (NOT -1 Partic);
 # välja jätta või maha tõmmata on lihtne
  SELECT (inf @SUBJ) (*1C (@PRD) + Adj)
-          (NOT *-1 SbPrNom BARRIER CLB)(NOT *1 SbPrNom BARRIER CLB);
+          (NEGATE *0 SbPrNom BARRIER CLB);
 
-#Kui sõna võib olla kvantori laiend ja kvantor ise võib olla alus, siis
-#kustuta kvantori märgend
-#Laual oli kuhi musti toidunõusid
-REMOVE (@SUBJ)(0 JärelKv)(NOT 0 (nom))
-        (*-1 NimKv + Subjekt OR ArvKv + Subjekt OR KvAdv + Subjekt BARRIER CLB LINK NOT 1 (Com));
 
 # Koordinatsioon
 SELECT (pl nom @SUBJ) (NOT 0 (P det))(-1 JaVoiK)(-2 Pl + Nom)(-2C Subjekt);
 SELECT (pl nom @SUBJ) (1 JaVoiK)(2 Pl + Nom)(2C Subjekt);
 SELECT (sg nom @SUBJ) (-1 JaVoiK)(-2 Sg + Nom)(-2C Subjekt)
-               (NOT *1 Impl BARRIER CLBC);
+               (NEGATE *1 Impl BARRIER CLBC);
 SELECT (sg nom @SUBJ) (1 JaVoiK)(2 Sg + Nom)(2C Subjekt);
 SELECT (nom @SUBJ) (*-1 JaVoi BARRIER Head OR CLBC LINK -1C Subjekt + Nom);
 SELECT (nom @SUBJ) (*-1 Koma BARRIER Head LINK -1C Subjekt + Nom)
                       (*1 JaVoi BARRIER CLBC LINK *1 Subjekt BARRIER CLBC);
 
 SELECT (@SUBJ) (0 KvAdv)(*-1 ("ole") BARRIER CLB)
-               (NOT *-1 Subjekt BARRIER CLB)(NOT *1 Subjekt BARRIER CLB);
+               (NEGATE *0 Subjekt BARRIER CLB);
 
 AFTER-SECTIONS
 
@@ -2456,9 +2511,9 @@ LIST ParObjVerb = <Part> <Part-P>;
 LIST Trans = <NGP-P>;
 
 SELECT ("kes" @SUBJ) OR ("mis" @SUBJ) (-1 JaVoiK)(0 Sg)(1 (V sg ps3))
-                   (NOT *1 Impl BARRIER CLB);
+                   (NEGATE *1 Impl BARRIER CLB);
 SELECT ("kes" @SUBJ) OR ("mis" @SUBJ) (-1 JaVoiK)(0 Pl)(1 (V pl ps3))
-                   (NOT *1 Impl BARRIER CLB);
+                   (NEGATE *1 Impl BARRIER CLB);
 
 
 REMOVE (S @SUBJ) (*-1C (inf @SUBJ) BARRIER CLB);
@@ -2466,12 +2521,43 @@ REMOVE (@SUBJ)   (0 (@PRD))(NOT 0 Määrus)(NOT 0 Objekt)
                  (*-1 Prverb BARRIER (@PRD) OR NotEestäiend OR CLBC
                   LINK *-1C Subjekt BARRIER (@PRD) OR NotEestäiend OR CLBC);
 SELECT (P pers pl ps3 nom @SUBJ) (*1 (V ps3 pl) BARRIER CLB) ;
-REMOVE (S part @SUBJ) (*-1 FV + ParObjVerb BARRIER CLB)(NOT *1 Par BARRIER Kvm OR CLB);
-REMOVE (S part @SUBJ) (*1 FV + ParObjVerb BARRIER CLB)(NOT *1 Par BARRIER Kvm OR CLB);
-REMOVE (S part @SUBJ) (*-1 FV + Trans BARRIER CLB)(NOT *1 Par BARRIER Kvm OR CLB);
-REMOVE (S part @SUBJ) (*1 FV + Trans BARRIER CLB)(NOT *1 Par BARRIER Kvm OR CLB);
+REMOVE (S part @SUBJ) (*-1 FV + ParObjVerb BARRIER CLB)(NEGATE *1 Par BARRIER Kvm OR CLB);
+REMOVE (S part @SUBJ) (*1 FV + ParObjVerb BARRIER CLB)(NEGATE *1 Par BARRIER Kvm OR CLB);
+REMOVE (S part @SUBJ) (*-1 FV + Trans BARRIER CLB)(NEGATE *1 Par BARRIER Kvm OR CLB);
+REMOVE (S part @SUBJ) (*1 FV + Trans BARRIER CLB)(NEGATE *1 Par BARRIER Kvm OR CLB);
 
 
 # uued lisareeglid
+# määruslik järeltäiend
 
+LIST AllRekts = "suund" "mõte" ;
+SELECT (S all @<NN) OR (P all @<NN) (*-1 AllRekts BARRIER CLB OR FinV);
+LIST ElRekts = "otsus" "mõte" "ülevaade" "arvamus" ;
+SELECT (S el @<NN) OR (P el @<NN) (*-1 ElRekts BARRIER CLB OR FinV);
+LIST TrRekts = "nõus_olek" "valmidus" "valmis_olek" ;
+SELECT (S tr @<NN) OR (P tr @<NN) (*-1 TrRekts BARRIER CLB OR FinV);
+LIST InRekts = "läbi_viimine" "toimumine" ;
+SELECT (S in @<NN) OR (P in @<NN) (*-1 InRekts BARRIER CLB OR FinV);
+LIST KomRekts = "seos" ;
+SELECT (S kom @<NN) OR (P kom @<NN) (*-1 KomRekts BARRIER CLB OR FinV);
+
+
+SELECT (S all @ADVL) (*-1 ("vastavalt" D) BARRIER CLB OR FinV);
+
+REMOVE (@<DN);
+LIST HinnanguAdv = "küllalt" "liiga" "üsna" "väga" "tõesti" "täiesti" "peaaegu" "nii";
+REMOVE (@DN>) (0 HinnanguAdv);
+LIST LaiendiAdv = "aga" "seega" "juba" "veel" "ka" "samuti";
+REMOVE (@DN>) (0 HinnanguAdv);
+
+REMOVE (@<NN) (-1 (K pre));
+
+#osaleda kodukoha arengu suunamises
+REMOVE (@<NN) (NEGATE *-1 NotEestäiend BARRIER (V) OR CLB);
+REMOVE (@NN>) (1C (@<Q))(NOT 2 Subst);
+
+LIST TahabObjekti = "võt" "pane" ;
+
+SELECT (@OBJ) (NEGATE *0 Objekt BARRIER CLB)(*0 TahabObjekti BARRIER CLB);
+SELECT (@OBJ) (*-1 (inf @OBJ) BARRIER CLB LINK 0 TahabObjekti LINK NEGATE *-1 Objekt BARRIER CLB)(NEGATE *1 Objekt BARRIER CLB);
 END
