@@ -467,7 +467,7 @@
 461@_P_ sg in@Pronoomen singular inessiiv@_P_ sg in@Pronoun singular inessive@P---s2@PP3SA@temas
 462@_P_ sg el@Pronoomen singular elatiiv@_P_ sg el@Pronoun singular elative@P---se@PP3SA@temast
 463@_P_ sg all@Pronoomen singular allatiiv@_P_ sg all@Pronoun singular allative@P---st@PP3SA@temale
-464@_P_ sg ad@Pronoomen singular adessiiv@_P_ sg ad@Pronoun singular adessive@P---s3@PP3SA@ temal
+464@_P_ sg ad@Pronoomen singular adessiiv@_P_ sg ad@Pronoun singular adessive@P---s3@PP3SA@temal
 465@_P_ sg abl@Pronoomen singular ablatiiv@_P_ sg abl@Pronoun singular ablative@P---sb@PP3SA@temalt
 466@_P_ sg tr@Pronoomen singular translatiiv@_P_ sg tr@Pronoun singular translative@P---s4@PP3S@temaks
 467@_P_ sg ter@Pronoomen singular terminatiiv@_P_ sg term@Pronoun singular terminative@P---s9@PP3S@temani
