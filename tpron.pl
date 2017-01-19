@@ -1,4 +1,6 @@
 #!/usr/bin/perl -w
+use utf8;
+use open qw(:std :utf8);
 
 while(<>){
   s:(emb\+.* //_P_) ([s|p]):$1 det $2:g;
@@ -10,7 +12,7 @@ while(<>){
   s:(esimene.* //_P_) ([s|p]):$1 dem $2:g;
   s:(iga\+.* //_P_) ([s|p]):$1 det $2:g;
   s:(iga_sugune.* //_P_) ([s|p]):$1 indef $2:g;
-  s:(iga_.ks\+.* //_P_) ([s|p]):$1 det $2:g;
+  s:(iga_üks\+.* //_P_) ([s|p]):$1 det $2:g;
   s:(ise\+.* //_P_) ([s|p]):$1 pos det refl $2:g;
   s:(ise_enese.* //_P_) ([s|p]):$1 refl $2:g;
   s:(ise_sugune.* //_P_) ([s|p]):$1 dem $2:g;
@@ -19,7 +21,6 @@ while(<>){
   s:(kumb\+.* //_P_) ([s|p]):$1 rel $2:g;
   s:(kumbki.* //_P_) ([s|p]):$1 det $2:g;
   s:(kõik.* //_P_) ([s|p]):$1 det $2:g;
-  s:(k.ik.* //_P_) ([s|p]):$1 det $2:g;
   s:(meie_sugune.* //_P_) ([s|p]):$1 dem $2:g;
   s:(meie_taoline.* //_P_) ([s|p]):$1 dem $2:g;
   s:(mihuke\+.* //_P_) ([s|p]):$1 inter rel $2:g;
@@ -56,12 +57,13 @@ while(<>){
   s:(miukene\+.* //_P_) ([s|p]):$1 inter rel $2:g;
   s:(muist\+.* //_P_) :$1 indef :g;
   s:(muu.* //_P_) ([s|p]):$1 indef $2:g;
-  s:(m.lema.* //_P_) ([s|p]):$1 det $2:g;
-  s:(m.ne_sugune\+.* //_P_) ([s|p]):$1 indef $2:g;
-  s:(m.ni\+.* //_P_) ([s|p]):$1 indef $2:g;
-  s:(m.ningane\+.* //_P_) ([s|p]):$1 indef $2:g;
-  s:(m.ningas.* //_P_) ([s|p]):$1 indef $2:g;
-  s:(m.herdune\+.* //_P_) ([s|p]):$1 inder rel $2:g;
+  #s:(m.lema.* //_P_) ([s|p]):$1 det $2:g;
+  s:(mõlema.* //_P_) ([s|p]):$1 det $2:g;
+  s:(mõne_sugune\+.* //_P_) ([s|p]):$1 indef $2:g;
+  s:(mõni\+.* //_P_) ([s|p]):$1 indef $2:g;
+  s:(mõningane\+.* //_P_) ([s|p]):$1 indef $2:g;
+  s:(mõningas.* //_P_) ([s|p]):$1 indef $2:g;
+  s:(mäherdune\+.* //_P_) ([s|p]):$1 inder rel $2:g;
   s:(määntne\+.* //_P_) ([s|p]):$1 dem $2:g; 
   s:(na_sugune.* //_P_) ([s|p]):$1 dem $2:g;
   s:(nende_sugune.* //_P_) ([s|p]):$1 dem $2:g;
@@ -108,9 +110,7 @@ while(<>){
   s:(siuke\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(siukene\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(säherdune\+.* //_P_) ([s|p]):$1 dem $2:g;
-  s:(s.herdune\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(säärane\+.* //_P_) ([s|p]):$1 dem $2:g;
-  s:(s..rane\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(taoline\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(teie_sugune\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(teie_taoline\+.* //_P_) ([s|p]):$1 dem $2:g;
@@ -127,13 +127,8 @@ while(<>){
   s:(too\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(too_sama\+.* //_P_) ([s|p]):$1 dem $2:g;
   s:(üks.* //_P_) ([s|p]):$1 dem indef $2:g;
-  s:(.ks.* //_P_) ([s|p]):$1 dem indef $2:g;
   s:(ükski.* //_P_) ([s|p]):$1 dem indef $2:g;
-  s:(.kski.* //_P_) ([s|p]):$1 dem indef $2:g;
   s:(üks_teise.* //_P_) ([s|p]):$1 rec indef $2:g;
-  s:(.ks_teise.* //_P_) ([s|p]):$1 rec $2:g;
-
-
   print;
 }
 
