@@ -1,4 +1,6 @@
 #!/usr/bin/perl -w
+use utf8;
+use open qw(:std :utf8);
 
 open(TABLE,"< tmorftrtabel.txt")
   or die "$!\n";
@@ -17,16 +19,22 @@ close(TABLE);
 
 $lipp=0;
 
+my $cap=0;
+
 while(<>){
   chomp;
-  if (/^[^ ]+/) {
+  if (/^[^ ]+/) {   #sõnavormirida
+    s/^\\"/"/g;
     print;
     print "\n";
+    if (/^[A-ZÕÄÖÜŽŠ]+/) {
+      $cap=1;
+    } else {
+      $cap=0;
+    }  
     next;
   }
   $tolgendus=$_;	
-
-	$tolgendus=~s/…([\+0]*) \/\/_Y_ \/\//…$1 \/\/_Z_ Ell \/\//; 
 	$tolgendus=~s/…([\+0]*) \/\/_Z_ \/\//…$1 \/\/_Z_ Ell \/\//; 
 	$tolgendus=~s/\.\.\.([\+0]*) \/\/_Z_ \/\//\.\.\.$1 \/\/_Z_ Ell \/\//; 
 	$tolgendus=~s/\.\.([\+0]*) \/\/_Z_ \/\//\.\.$1 \/\/_Z_ Els \/\//; 
@@ -40,7 +48,7 @@ while(<>){
 	$tolgendus=~s/-([\+0]*) \/\/_Z_ \/\//-$1 \/\/_Z_ Dsh \/\//; 
 	$tolgendus=~s/\(([\+0]*) \/\/_Z_ \/\//\($1 \/\/_Z_ Opr \/\//; 
 	$tolgendus=~s/\)([\+0]*) \/\/_Z_ \/\//\)$1 \/\/_Z_ Cpr \/\//; 
-	$tolgendus=~s/"([\+0]*) \/\/_Z_ \/\//"$1 \/\/_Z_ Quo \/\//; 
+	$tolgendus=~s:\\"\s+//_Z_ //:" //_Z_ Quo //:g; 
 	$tolgendus=~s/«([\+0]*) \/\/_Z_ \/\//«$1 \/\/_Z_ Oqu \/\//; 
 	$tolgendus=~s/»([\+0]*) \/\/_Z_ \/\//»$1 \/\/_Z_ Cqu \/\//; 
 	$tolgendus=~s/“([\+0]*) \/\/_Z_ \/\//“$1 \/\/_Z_ Oqu \/\//; #E2 80 9C
@@ -83,8 +91,9 @@ $j=0;$lipp=0;
 		# oli: $morf=~ s/$rida->[1]$/$rida->[3]/;
 		# ei teisendanud ?-ga lõppevaid ridu, nt "_N_ ?" 
                 $morf=~s/ \?/ \#?/;  
-                $morf=~s/ \?/ \#?/;  
-#print "1";
+                if ($cap) {
+                  $morf .= " cap";
+                }  
                 print $root." //".$morf." //\n";
                 $morf=$m2; #last;
 		$lipp++;
@@ -92,7 +101,12 @@ $j=0;$lipp=0;
             }
             $j++;
           }
-          if ($lipp==0) { print $root." //".$morf." //\n"; $lipp=0;}
+          if ($lipp==0) { 
+                if ($cap) {
+                  $morf .= " cap";
+                }  
+             print $root." //".$morf." //\n"; $lipp=0;
+          }
         }
         if ($3=~/^\s*$/) {
           $morf=$pos;  
@@ -102,8 +116,10 @@ $j=0;$lipp=0;
 		# oli: $morf=~ s/$rida->[1]$/$rida->[3]/;
        		$morf=~ s/$rida->[1]/$rida->[3]/;
                 $morf=~s/ \?/ \#?/;  
-                $morf=~s/ \?/ \#?/;  
 #print "$root"; print "$morf"; print "2";
+                if ($cap) {
+                  $morf .= " cap";
+                }  
                 print $root." //".$morf." //\n";
                 $morf=$m2;             }
           }

@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 #konverteeri kms-kuju cg3-sisendkujule
+use open qw(:std :utf8);
+
 
 while(<>){
   s/\#cap \#cap/cap/g;

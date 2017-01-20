@@ -1,5 +1,15 @@
 Eesti keele Kitsenduste Grammatika (CG) süntaksianalüsaator
 
+2017. a versioon
+
+./parser17.sh sisend
+luuakse sisend.cg3
+
+Failis parser17. sh on vaja morfoloogiaanalüsaatori (vabamorf) ja skriptide asukohad kirjutada RADA muutujatesse.
+Et saada eelmise versiooniga samaväärne väljund, kus rektsiooniinfo on kustutatud, võib lisada skripti rea kaheks viimaseks väljakutsutavaks programmiks $RADA/1reaks.pl | $RADA/inforemover.pl
+
+Varasem versioon
+
 Kasutamise näidis: test.sh sisend 
 
 kus sisend - sisendfaili nimi (sisaldab puhast teksti ilma lisamärgenduseta, utf8 kodeeringus).

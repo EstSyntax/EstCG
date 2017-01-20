@@ -1,0 +1,35 @@
+DELIMITERS = "<s>" "</s>" "<p>" "</p>" ;
+
+BEFORE-SECTIONS
+
+INCLUDE leks.rules ;
+
+LIST Verb = V ;
+LIST Pers = ps ;
+LIST Partic = partic ;
+LIST Quot = quot ; 
+LIST FinVerb = <FinV> ;
+LIST vksks = (partic <v>) ;
+LIST tavksks = (partic <tav>) ;
+LIST nudksks = (partic <nud>) ;
+LIST tudksks = (partic <tud>) ;
+LIST mataksks = (partic <mata>) ;
+LIST AuxList = "ei" "ole" "ära" ;
+LIST CrdList = "ja" "ning" "ega" ("või" J) "ehk" ;
+LIST Modaal = "või" "saa" "pida" "näi" "tund" "paist";
+
+
+REMOVE ("ole" mod);
+REMOVE (aux) (NOT 0 ("ei") OR ("ole") OR ("ära"));
+REMOVE (main)(0 ("ei") OR ("ära"));
+REMOVE (mod) (NOT 0 Modaal);
+"tegi" REMOVE (P);
+SUBSTITUTE (sub) (*) TARGET (J) (0 CrdList);
+SUBSTITUTE (crd) (*) TARGET (J) (NOT 0 CrdList);
+
+
+END
+
+SECTION
+
+END

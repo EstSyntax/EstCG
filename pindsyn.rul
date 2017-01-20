@@ -192,6 +192,7 @@ ADD (@<P) TARGET (S all) OR (P all) OR (N all) (*-1 (<all>) BARRIER FinV);
 ADD (@<P) TARGET (S ad) OR (P ad) OR (N ad) (*-1 (<ad>) BARRIER FinV);
 ADD (@P>) TARGET (S ad) OR (P ad) OR (N ad) (1 ("pool" K)); # TP 2012 kahel pool
 ADD (@P>) TARGET (S term) OR (P term) OR (N term) (*1 (<term>) BARRIER FinV);
+ADD (@<P) TARGET (S abes) OR (P abes) OR (N abes) (*-1 (<abes>) BARRIER FinV);
 ADD (@P>) TARGET (S abes) OR (P abes) OR (N abes) (*1 (<abes>) BARRIER FinV);
 ADD (@P>) TARGET (S kom) OR (P kom) OR (N kom) (*1 (<kom>) BARRIER FinV); 
 ADD (@<P) TARGET (S kom) OR (P kom) OR (N kom) (*-1 (<kom>) BARRIER FinV);
@@ -783,7 +784,7 @@ REMOVE (@P>) (-1 NimKv OR ArvKv OR KvAdv)(0 Eestäiend)(1C (@<Q))(2 (post));
 SELECT (term @<P) (*-1 (pre <term>) BARRIER CLBC);
 SELECT (all @<P) (*-1 (pre <all>) BARRIER CLBC);
 SELECT (el @<P) (*-1 (pre <el>) BARRIER CLBC)(NEGATE *1 (el) BARRIER CLBC);
-SELECT (abl @<P) (*-1 (pre <abl>) BARRIER CLBC);
+SELECT (abes @<P) (*-1 (pre <abes>) BARRIER CLBC);
 SELECT (kom @<P) (*-1 (pre <kom>) BARRIER CLBC);
 
 SELECT (part @<P) (*-1C (pre <part>) BARRIER (part @<P) OR CLBC)

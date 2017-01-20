@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 #remove <s> analyses
+use open qw(:std :utf8);
 
 print "{\n\t\"paragraphs\": [\n\t\t{\n\t\t\t\"sentences\": [";
 my $s = 2;

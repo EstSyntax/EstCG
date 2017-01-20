@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+use utf8;
+use open qw(:std :utf8);
+
 
 my $s = 0;
 my $word = "";
@@ -9,7 +12,9 @@ my $form = "";
 my $pos = "";
 my $lemma = "";
 while(<>){
+  #s/[\\]n/\n/g; #vabamorfi bugi
   chomp;
+  
   if (/^\t\t\t\t{/){ # sentence
     $s = 1;
     print "<s>\n";
