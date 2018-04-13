@@ -17,7 +17,7 @@ Et saada eelmise versiooniga samaväärne väljund, kus rektsiooniinfo on kustut
 
 Väljund kirjutatakse faili sisend.cg3, väljundi seletus: https://korpused.keeleressursid.ee/syntaks/dokumendid/syntaksiliides_ee.pdf. Põhjalikumat märgenduspõhimõtete kirjeldust leiab Eesti keele sõltuvuspuude panga dokumentatsioonis: https://www.keeletehnoloogia.ee/et/ekt-projektid/vahendid-teksti-mitmekihiliseks-margendamiseks-rakendatuna-koondkorpusele/soltuvussuntaktiliselt-analuusitud-korpus.
 
-Süntaktilise analüüsi jaoks on vajalik eesti keele morfoloogiline analüsaator, nt Vabamorf: https://github.com/Filosoft/vabamorf/blob/master/doc/readme.html (test.sh-s on vajalik paika panna installeeritud Vabamorfi programmi ja sõnastiku teed) ning VISL CG3 Kitsenduste Grammatika analüsaator: http://beta.visl.sdu.dk/constraint_grammar.html. 
+Süntaktilise analüüsi jaoks on vajalik eesti keele morfoloogiline analüsaator, nt Vabamorf: https://github.com/Filosoft/vabamorf  ning VISL CG3 Kitsenduste Grammatika analüsaator: http://beta.visl.sdu.dk/constraint_grammar.html. 
 
 Analüsaatorit saab kasutada ka veebiliidese kaudu: https://korpused.keeleressursid.ee/syntaks/index.php.
 
