@@ -1,0 +1,8 @@
+DELIMITERS = "</s>" "<s>" ;
+
+SECTION
+
+SETPARENT (xxxxxxx) TO (1 (yyyyyyy));
+
+END
+
